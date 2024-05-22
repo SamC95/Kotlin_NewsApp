@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">NewsApp</string>
+    <string name="the_news_app">Just the News</string>
+    <string name="login">Login</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="icons_by_icons8">Icons by <a href="https://www.icons8.com">Icons8</a>.</string>
+    <string name="news_data_from_newsapi">News Data from <a href="https://www.newsapi.org">NewsAPI</a>.</string>
+</resources>
