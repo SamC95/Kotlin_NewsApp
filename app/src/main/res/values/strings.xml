@@ -2,7 +2,18 @@
     <string name="app_name">NewsApp</string>
     <string name="the_news_app">Just the News</string>
     <string name="login">Login</string>
+    <string name="Continue">Continue</string>
     <string name="sign_up">Sign Up</string>
     <string name="icons_by_icons8">Icons by <a href="https://www.icons8.com">Icons8</a>.</string>
     <string name="news_data_from_newsapi">News Data from <a href="https://www.newsapi.org">NewsAPI</a>.</string>
+    <string name="welcome_back">Welcome Back!</string>
+    <string name="enter_email_address">Enter Email Address</string>
+    <string name="enter_password">Enter Password</string>
+    <string name="login_with_email_and_password">Sign In</string>
+    <string name="log_in_using_another_service">OR SIGN IN WITH</string>
+    <string name="login_with_google_account">Login with Google Account</string>
+    <string name="log_in_with_apple_account">Log in with Apple Account</string>
+    <string name="what_s_this"><u>What\'s This?</u></string>
+    <string name="noAccount">Don\'t have an account? </string>
+    <string name="signUpLink"><u>Sign Up</u></string>
 </resources>
