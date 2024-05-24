@@ -77,6 +77,7 @@
         android:layout_width="125dp"
         android:layout_height="wrap_content"
         android:background="@drawable/rounded_corner"
+        android:fontFamily="@font/montserrat"
         android:text="@string/Continue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -106,6 +107,7 @@
         android:layout_marginEnd="8dp"
         android:gravity="center"
         android:text="@string/log_in_using_another_service"
+        android:fontFamily="@font/montserrat"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/left_divider"
@@ -130,7 +132,7 @@
     <ImageButton
         android:id="@+id/googleLogin"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:background="@null"
         android:contentDescription="@string/login_with_google_account"
         android:src="@drawable/android_light_sq_si_1x"
@@ -143,7 +145,7 @@
     <ImageButton
         android:id="@+id/appleLogin"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:background="@null"
         android:contentDescription="@string/log_in_with_apple_account"
         android:src="@drawable/apple_id_button1x"
@@ -151,21 +153,23 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/googleLogin"
-        app:layout_constraintVertical_bias="0.072" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/SSOInfo"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:fontFamily="@font/montserrat"
+        android:gravity="center"
         android:text="@string/what_s_this"
         android:textColor="@color/links"
-        android:clickable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appleLogin"
-        app:layout_constraintVertical_bias="0.119" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/noAccountText"
@@ -173,6 +177,7 @@
         android:layout_height="wrap_content"
         android:text="@string/noAccount"
         android:textColor="@color/white"
+        android:fontFamily="@font/montserrat"
         app:layout_constraintBottom_toTopOf="@+id/emailAddressField"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.379"
@@ -182,9 +187,13 @@
     <TextView
         android:id="@+id/signUpRedirect"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
+        android:gravity="center"
         android:text="@string/signUpLink"
+        android:fontFamily="@font/montserrat"
         android:textColor="@color/links"
+        android:clickable="true"
+        android:focusable="true"
         app:layout_constraintBottom_toTopOf="@+id/emailAddressField"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.082"
