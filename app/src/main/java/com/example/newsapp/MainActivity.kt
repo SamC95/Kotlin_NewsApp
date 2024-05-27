@@ -7,7 +7,6 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.activity.ComponentActivity
 
-
 class MainActivity : ComponentActivity() {
     private lateinit var loginBtn: Button
     private lateinit var signUpBtn: Button
@@ -26,11 +25,14 @@ class MainActivity : ComponentActivity() {
         icons8Text.movementMethod = LinkMovementMethod.getInstance()
         newsApiText.movementMethod = LinkMovementMethod.getInstance()
 
-
         loginBtn.setOnClickListener {
             val loginIntent = Intent(this, LoginActivity::class.java)
             startActivity(loginIntent)
         }
 
+        signUpBtn.setOnClickListener {
+            val signUpIntent = Intent(this, AccCreationActivity::class.java)
+            startActivity(signUpIntent)
+        }
     }
 }

@@ -18,10 +18,10 @@
         android:textSize="36sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.13" />
+        app:layout_constraintVertical_bias="0.137" />
 
     <TextView
         android:id="@+id/localLogin"
@@ -53,7 +53,8 @@
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/welcomeText"
-        app:layout_constraintVertical_bias="0.187" />
+        app:layout_constraintVertical_bias="0.187"
+        android:autofillHints="" />
 
     <EditText
         android:id="@+id/passwordField"
@@ -70,7 +71,8 @@
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/emailAddressField"
-        app:layout_constraintVertical_bias="0.031" />
+        app:layout_constraintVertical_bias="0.031"
+        android:autofillHints="" />
 
     <Button
         android:id="@+id/loginButton"
@@ -199,5 +201,18 @@
         app:layout_constraintHorizontal_bias="0.082"
         app:layout_constraintStart_toEndOf="@+id/noAccountText"
         app:layout_constraintTop_toBottomOf="@+id/localLogin" />
+
+    <ImageView
+        android:id="@+id/newsLogo"
+        android:layout_width="109dp"
+        android:layout_height="69dp"
+        android:src="@drawable/news_logo_240"
+        android:contentDescription="@string/logo_of_just_the_news_application"
+        app:layout_constraintBottom_toTopOf="@+id/welcomeText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.505"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
