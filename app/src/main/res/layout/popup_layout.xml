@@ -14,7 +14,7 @@
         android:text="@string/these_options_allow_you_to_log_in_using_your_google_or_apple_account_credentials"
         android:padding="10dp"
         android:gravity="center"
-        android:fontFamily="@font/montserrat"
+        android:fontFamily="@font/montserrat_light"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/close"
-        android:fontFamily="@font/montserrat"
+        android:fontFamily="@font/montserrat_light"
         app:layout_constraintTop_toBottomOf="@id/textView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -25,7 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:fontFamily="@font/montserrat"
+        android:fontFamily="@font/montserrat_light"
         android:text="@string/the_news_app"
         android:textColor="@color/white"
         android:textSize="30sp"
@@ -41,7 +41,7 @@
         android:background="@drawable/rounded_corner"
         android:padding="2dp"
         android:text="@string/login"
-        android:fontFamily="@font/montserrat"
+        android:fontFamily="@font/montserrat_light"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -53,15 +53,14 @@
         android:id="@+id/signUpBtn"
         android:layout_width="139dp"
         android:layout_height="55dp"
-        android:text="@string/sign_up"
         android:background="@drawable/rounded_corner"
-        android:fontFamily="@font/montserrat"
+        android:fontFamily="@font/montserrat_light"
+        android:text="@string/sign_up"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/loginBtn"
-        app:layout_constraintVertical_bias="0.05" />
+        app:layout_constraintVertical_bias="0.277" />
 
     <TextView
         android:id="@+id/icons8"
@@ -69,7 +68,7 @@
         android:layout_height="wrap_content"
         android:text="@string/icons_by_icons8"
         android:textColor="@color/white"
-        android:fontFamily="@font/montserrat"
+        android:fontFamily="@font/montserrat_light"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -83,12 +82,41 @@
         android:layout_height="wrap_content"
         android:text="@string/news_data_from_newsapi"
         android:textColor="@color/white"
-        android:fontFamily="@font/montserrat"
+        android:fontFamily="@font/montserrat_light"
         app:layout_constraintBottom_toTopOf="@+id/icons8"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/signUpBtn"
         app:layout_constraintVertical_bias="0.953" />
+
+    <TextView
+        android:id="@+id/loginInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat_light"
+        android:gravity="center"
+        android:text="@string/log_in_using_an_existing_account"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/signUpBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.551"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loginBtn"
+        app:layout_constraintVertical_bias="0.266" />
+
+    <TextView
+        android:id="@+id/signUpInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat_light"
+        android:gravity="center"
+        android:text="@string/create_a_just_the_news_account"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/newsapi"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/signUpBtn"
+        app:layout_constraintVertical_bias="0.132" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

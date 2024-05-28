@@ -20,4 +20,14 @@
     <string name="these_options_allow_you_to_log_in_using_your_google_or_apple_account_credentials">You can log in using your Google or Apple account credentials.\n \nChoose one of these if you would prefer not to make a dedicated Just the News account</string>
     <string name="close">Close</string>
     <string name="this_is_the_account_creation_page_temp_text">This is the account creation page - Temp Text</string>
+    <string name="log_in_using_an_existing_account">Log in using an existing account or third-party log in</string>
+    <string name="create_a_just_the_news_account">Create a Just the News account</string>
+    <string name="create_an_account">Create an account</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="log_in"><u>Log In</u></string>
+    <string name="enter_your_details">Enter your details</string>
+    <string name="enter_first_name">Enter First Name</string>
+    <string name="enter_surname">Enter Surname</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="create">Create</string>
 </resources>
