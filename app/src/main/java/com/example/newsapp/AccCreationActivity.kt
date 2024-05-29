@@ -1,12 +1,18 @@
 package com.example.newsapp
 
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
+import com.google.firebase.firestore.firestore
 
 class AccCreationActivity : ComponentActivity() {
     private lateinit var headerText: TextView
@@ -22,6 +28,8 @@ class AccCreationActivity : ComponentActivity() {
     private lateinit var confirmPassField: EditText
     private lateinit var confirmPassError: TextView
     private lateinit var createButton: Button
+
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +49,9 @@ class AccCreationActivity : ComponentActivity() {
         confirmPassError = findViewById(R.id.confirmPasswordError)
         createButton = findViewById(R.id.createButton)
 
+        auth = Firebase.auth
+        val db = Firebase.firestore
+
         // Redirects to the log in page
         loginRedirect.setOnClickListener {
             val redirectIntent = Intent(this, LoginActivity::class.java)
@@ -54,8 +65,48 @@ class AccCreationActivity : ComponentActivity() {
             val passwordValid = validatePassword(passwordField, confirmPassField)
 
             if (firstNameValid && surnameValid && emailValid && passwordValid) {
-                Toast.makeText(this, "All inputs are valid", Toast.LENGTH_SHORT).show()
-            } // Temporary toast for checking validation is working as intended
+                val fName = firstNameField.text.toString().trim() // Converts to string and trims
+                val sName = surnameField.text.toString().trim()
+                val email = emailAddressField.text.toString().trim()
+
+                auth.createUserWithEmailAndPassword( // Attempts to add user to firebase authentication
+                    emailAddressField.text.toString(),
+                    passwordField.text.toString()
+                )
+                    .addOnCompleteListener {
+                        if (it.isSuccessful) { // If the process is successful
+                            Log.d(TAG, "createUserWithEmail:success")
+
+                            val userMap = hashMapOf( // Creates a hashmap of the user details
+                                "firstName" to fName,
+                                "surname" to sName,
+                                "email" to email
+                            )
+
+                            // Gets the UID of the current user to serve as a basis for firestore document
+                            val userId = FirebaseAuth.getInstance().currentUser!!.uid
+
+                            db.collection("users") // Defines the collection to store data in
+                                .document(userId).set(userMap) // Sets document name to unique UID and sets content to values in hashmap
+                                .addOnSuccessListener {
+                                    Toast.makeText(this, "Successfully added", Toast.LENGTH_SHORT).show()
+                                    firstNameField.text.clear()
+                                    surnameField.text.clear()
+                                    emailAddressField.text.clear()
+                                    passwordField.text.clear()
+                                    confirmPassField.text.clear() // Clears fields on success
+                                }
+                        }
+                        else { // If authentication fails
+                            Log.w(TAG, "createUserWithEmail:failure", it.exception)
+                            Toast.makeText(
+                                baseContext,
+                                "Authentication failed.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+            }
         }
     }
 
@@ -144,27 +195,6 @@ class AccCreationActivity : ComponentActivity() {
         val confirmPassInput = confirmPassField.text.toString().trim()
 
         when {
-            passwordInput.length < 8 || confirmPassInput.length < 8 -> { // If either of the fields are too short
-                if (passwordInput.length < 8) { // When first field is too short
-                    passwordField.setBackgroundResource(R.drawable.error_background)
-                    passwordError.text = getString(R.string.too_short)
-                }
-                else { // When first field is not too short
-                    passwordField.setBackgroundResource(R.drawable.rounded_corner)
-                    passwordError.text = ""
-                }
-
-                if (confirmPassInput.length < 8) { // When second field is too short
-                    confirmPassField.setBackgroundResource(R.drawable.error_background)
-                    confirmPassError.text = getString(R.string.too_short)
-                }
-                else { // When second field is not too short
-                    confirmPassField.setBackgroundResource(R.drawable.rounded_corner)
-                    confirmPassError.text = ""
-                }
-
-                return false
-            }
             passwordInput.isEmpty() && confirmPassInput.isNotEmpty() -> { // If first field is empty and second field is not
                 passwordField.setBackgroundResource(R.drawable.error_background)
                 confirmPassField.setBackgroundResource(R.drawable.rounded_corner)
@@ -186,6 +216,27 @@ class AccCreationActivity : ComponentActivity() {
                 confirmPassField.setBackgroundResource(R.drawable.error_background)
                 passwordError.text = getString(R.string.required)
                 confirmPassError.text = getString(R.string.required)
+
+                return false
+            }
+            passwordInput.length < 8 || confirmPassInput.length < 8 -> { // If either of the fields are too short
+                if (passwordInput.length < 8) { // When first field is too short
+                    passwordField.setBackgroundResource(R.drawable.error_background)
+                    passwordError.text = getString(R.string.too_short)
+                }
+                else { // When first field is not too short
+                    passwordField.setBackgroundResource(R.drawable.rounded_corner)
+                    passwordError.text = ""
+                }
+
+                if (confirmPassInput.length < 8) { // When second field is too short
+                    confirmPassField.setBackgroundResource(R.drawable.error_background)
+                    confirmPassError.text = getString(R.string.too_short)
+                }
+                else { // When second field is not too short
+                    confirmPassField.setBackgroundResource(R.drawable.rounded_corner)
+                    confirmPassError.text = ""
+                }
 
                 return false
             }
