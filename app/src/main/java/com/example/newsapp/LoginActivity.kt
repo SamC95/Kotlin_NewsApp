@@ -31,10 +31,12 @@ class LoginActivity : ComponentActivity() {
 
         val ssoPopUpWindow = SSOPopUpWindow(this)
 
+        // Shows pop up window with information for Single Sign On (See SSOPopUpWindow class)
         ssoInfo.setOnClickListener {
             ssoPopUpWindow.showPopUpWindow(it)
         }
 
+        // Redirects to the Sign Up page
         signUpRedirect.setOnClickListener {
             val redirectIntent = Intent(this, AccCreationActivity::class.java)
             startActivity(redirectIntent)

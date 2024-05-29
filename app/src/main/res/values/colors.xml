@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="links">#cfb2ea</color>
     <color name="backgroundPurple">#401664</color>
+    <color name="errorRed">#ff00</color>
 </resources>

@@ -30,4 +30,8 @@
     <string name="enter_surname">Enter Surname</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="create">Create</string>
+    <string name="required">Required</string>
+    <string name="too_short">Too short</string>
+    <string name="invalid_email">Invalid Email</string>
+    <string name="password_must_match">Password must match</string>
 </resources>

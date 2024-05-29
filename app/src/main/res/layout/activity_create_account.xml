@@ -112,9 +112,10 @@
         android:inputType="text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/firstNameField"
-        app:layout_constraintVertical_bias="0.031" />
+        app:layout_constraintVertical_bias="0.068" />
 
     <EditText
         android:id="@+id/emailAddressField"
@@ -129,9 +130,10 @@
         android:inputType="textEmailAddress"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/surnameField"
-        app:layout_constraintVertical_bias="0.034" />
+        app:layout_constraintVertical_bias="0.081" />
 
     <EditText
         android:id="@+id/passwordField"
@@ -146,9 +148,10 @@
         android:inputType="textPassword"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/emailAddressField"
-        app:layout_constraintVertical_bias="0.047" />
+        app:layout_constraintVertical_bias="0.127" />
 
     <EditText
         android:id="@+id/confirmPasswordField"
@@ -163,12 +166,13 @@
         android:inputType="textPassword"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/passwordField"
-        app:layout_constraintVertical_bias="0.059" />
+        app:layout_constraintVertical_bias="0.176" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/createButton"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:background="@drawable/rounded_corner"
@@ -180,7 +184,68 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/confirmPasswordField"
-        app:layout_constraintVertical_bias="0.216" />
+        app:layout_constraintVertical_bias="0.539" />
+
+    <TextView
+        android:id="@+id/firstNameError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:fontFamily="@font/montserrat_light"
+        android:text=""
+        android:textColor="@color/errorRed"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.272"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/firstNameField" />
+
+    <TextView
+        android:id="@+id/surnameError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat_light"
+        android:text=""
+        android:textColor="@color/errorRed"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.272"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/surnameField" />
+
+    <TextView
+        android:id="@+id/emailAddressError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat_light"
+        android:text=""
+        android:textColor="@color/errorRed"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.272"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/emailAddressField" />
+
+    <TextView
+        android:id="@+id/passwordError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat_light"
+        android:text=""
+        android:textColor="@color/errorRed"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.272"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/passwordField" />
+
+    <TextView
+        android:id="@+id/confirmPasswordError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat_light"
+        android:text=""
+        android:textColor="@color/errorRed"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.272"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/confirmPasswordField" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
