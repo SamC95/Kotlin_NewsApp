@@ -6,12 +6,29 @@ import android.text.method.LinkMovementMethod
 import android.widget.Button
 import android.widget.TextView
 import androidx.activity.ComponentActivity
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
 
 class MainActivity : ComponentActivity() {
     private lateinit var loginBtn: Button
     private lateinit var signUpBtn: Button
     private lateinit var icons8Text: TextView
     private lateinit var newsApiText: TextView
+
+    private lateinit var auth: FirebaseAuth
+
+    public override fun onStart() {
+        super.onStart()
+        auth = Firebase.auth
+
+        val currentUser = auth.currentUser
+
+        if (currentUser != null) {
+            val automaticLoginIntent = Intent(this, NewsActivity::class.java)
+            startActivity(automaticLoginIntent)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

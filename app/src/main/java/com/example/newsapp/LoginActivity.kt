@@ -65,9 +65,15 @@ class LoginActivity : ComponentActivity() {
                     .addOnCompleteListener {
                         if (it.isSuccessful) { // If the details are correct, successfully log in
                             Log.d(TAG, "signInWithEmail:success")
-                            val user = auth.currentUser
+
+                            emailTextField.text.clear()
+                            passwordTextField.text.clear()
 
                             Toast.makeText(baseContext, "User found", Toast.LENGTH_SHORT).show()
+
+                            val validatedLoginIntent = Intent(this, NewsActivity::class.java)
+                            startActivity(validatedLoginIntent)
+
                         } else { // If details are not correct, display appropriate errors for user clarity
                             Log.w(TAG, "signInWithEmail:failure", it.exception)
 
