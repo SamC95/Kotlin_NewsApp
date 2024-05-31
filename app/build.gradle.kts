@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -7,6 +9,10 @@ plugins {
 android {
     namespace = "com.example.newsapp"
     compileSdk = 34
+
+    buildFeatures {
+        buildConfig = true
+    }
 
     defaultConfig {
         applicationId = "com.example.newsapp"
@@ -19,6 +25,18 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        val keystoreFile = project.rootProject.file("apikeys.properties")
+        val properties = Properties()
+        properties.load(keystoreFile.inputStream())
+
+        val apiKey = properties.getProperty("NEWS_API_KEY") ?: ""
+
+        buildConfigField(
+            type = "String",
+            name = "NEWS_API_KEY",
+            value = apiKey
+        )
     }
 
     buildTypes {
@@ -73,6 +91,8 @@ dependencies {
     implementation("com.google.android.gms:play-services-base:18.4.0")
     implementation("com.google.firebase:firebase-auth:23.0.0")
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.0")
+    implementation("androidx.appcompat:appcompat:1.7.0")
+    implementation("com.google.android.material:material:1.12.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")

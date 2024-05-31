@@ -29,6 +29,8 @@ class NewsActivity : ComponentActivity() {
         auth = Firebase.auth
         val db = Firebase.firestore
 
+        val apiKey = BuildConfig.NEWS_API_KEY
+
         // Gets user data from Firestore
         val docRef = db.collection("users").document(FirebaseAuth.getInstance().currentUser!!.uid)
 

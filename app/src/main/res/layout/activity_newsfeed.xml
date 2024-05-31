@@ -3,25 +3,102 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:context=".NewsActivity">
 
     <TextView
         android:id="@+id/testString"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text=""
+        android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/newsSearchBar" />
 
     <Button
         android:id="@+id/logoutButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/rounded_corner"
         android:text="Log out"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/testString" />
+
+    <EditText
+        android:id="@+id/newsSearchBar"
+        android:layout_width="365dp"
+        android:layout_height="52dp"
+        android:layout_marginTop="68dp"
+        android:autofillHints=""
+        android:background="@drawable/white_background_purple_border"
+        android:ems="10"
+        android:fontFamily="@font/montserrat_light"
+        android:gravity="center"
+        android:hint="@string/search_for_news"
+        android:inputType="text"
+        android:text=""
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/searchButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/search_button"
+        android:src="@drawable/icons8_search_50"
+        app:layout_constraintBottom_toBottomOf="@+id/newsSearchBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/newsSearchBar"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="412dp"
+        android:layout_height="70dp"
+        android:background="@color/backgroundPurple"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintBottom_toTopOf="@+id/newsSearchBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:background="@color/backgroundPurple"
+                android:contentDescription="@string/navigation_bar_button"
+                android:paddingStart="15dp"
+                android:paddingEnd="0dp"
+                android:src="@drawable/icons8_menu_48" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_light"
+                android:gravity="center"
+                android:text="@string/the_news_app"
+                android:textColor="@color/white"
+                android:textSize="25sp" />
+
+        </LinearLayout>
+    </androidx.appcompat.widget.Toolbar>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -18,7 +18,7 @@ class MainActivity : ComponentActivity() {
 
     private lateinit var auth: FirebaseAuth
 
-    public override fun onStart() {
+    public override fun onStart() { // On App Start, if the user was logged in then skip login activities
         super.onStart()
         auth = Firebase.auth
 

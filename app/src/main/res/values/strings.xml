@@ -38,4 +38,7 @@
     <string name="email_address_field_is_empty">Email Address field is empty</string>
     <string name="password_field_is_empty">Password field is empty</string>
     <string name="email_and_password_fields_are_empty">Email and Password fields are empty</string>
+    <string name="search_for_news">Search for News</string>
+    <string name="navigation_bar_button">Navigation Bar Button</string>
+    <string name="search_button">Search Button</string>
 </resources>
