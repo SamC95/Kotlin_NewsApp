@@ -3,11 +3,16 @@ package com.example.newsapp
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView.OnItemClickListener
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class NewsTypeAdapter(private val dataSet: List<String>) :
+class NewsTypeAdapter(private val dataSet: List<String>, private val itemClickListener: OnItemClickListener) :
     RecyclerView.Adapter<NewsTypeAdapter.NewsTypeHolder>() {
+
+    interface OnItemClickListener {
+        fun onItemClicked(position: Int, data: String)
+    }
 
     // ViewHolder class that holds references to the views for each item
     class NewsTypeHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -25,9 +30,11 @@ class NewsTypeAdapter(private val dataSet: List<String>) :
 
     // Replaces the view content with the list of strings from the data set
     override fun onBindViewHolder(holder: NewsTypeHolder, position: Int) {
-        // Get element from your dataset at this position and replace the
-        // contents of the view with that element
         holder.newsTypeButton.text = dataSet[position]
+
+        holder.newsTypeButton.setOnClickListener {
+            itemClickListener.onItemClicked(position, dataSet[position])
+        }
     }
 
     // Gets the size of the data set

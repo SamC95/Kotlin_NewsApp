@@ -50,7 +50,7 @@ class APIRequests {
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    fun categoryRequests(country: String, categoryName: String, newsApiKey: String) {
+    fun categoryRequests(country: String, categoryName: String, newsApiKey: String, callback: (MutableList<Article>) -> Unit) {
         GlobalScope.launch(Dispatchers.IO) {
             val url = URL("https://newsapi.org/v2/top-headlines?country=$country&category=$categoryName&apiKey=$newsApiKey")
 
@@ -58,11 +58,17 @@ class APIRequests {
                 requestMethod = "GET"
                 setRequestProperty("User-Agent", "Mozilla/126.0")
 
-                inputStream.bufferedReader().use {
-                    it.lines().forEach { line ->
-                        println(line)
-                    }
+                val response = StringBuilder()
+                val reader = BufferedReader(InputStreamReader(inputStream))
+                var line: String?
+
+                while (reader.readLine().also { line = it } != null) {
+                    response.append(line).append("\n")
                 }
+                reader.close()
+
+                val articles = parseArticles(response.toString())
+                callback(articles)
             }
         }
     }

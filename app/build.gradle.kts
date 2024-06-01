@@ -75,6 +75,7 @@ dependencies {
     implementation("androidx.credentials:credentials-play-services-auth:1.3.0-alpha04")
 
     implementation("com.github.bumptech.glide:glide:4.12.0")
+    implementation("com.google.android.gms:play-services-location:21.3.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 
     implementation("com.google.firebase:firebase-auth:23.0.0")

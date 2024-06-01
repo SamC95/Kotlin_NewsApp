@@ -12,8 +12,6 @@ import java.util.Date
 import java.util.Locale
 
 class ArticlesAdapter(private val articles: List<APIRequests.Article>) : RecyclerView.Adapter<ArticlesAdapter.ArticleViewHolder>() {
-
-
     class ArticleViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val sourceName: TextView = view.findViewById(R.id.sourceName)
         val title: TextView = view.findViewById(R.id.title)
@@ -43,10 +41,10 @@ class ArticlesAdapter(private val articles: List<APIRequests.Article>) : Recycle
 
         if (article.urlToImage != "null") {
             holder.urlToImage.visibility = View.VISIBLE
+            holder.urlToImage.layoutParams.height = 750
             Glide.with(holder.itemView.context)
                 .load(article.urlToImage)
                 .into(holder.urlToImage)
-            holder.itemView.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
         }
         else {
             holder.urlToImage.visibility = View.GONE
