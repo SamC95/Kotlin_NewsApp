@@ -3,6 +3,7 @@ package com.example.newsapp
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -41,7 +42,7 @@ class ArticlesAdapter(private val articles: List<APIRequests.Article>) : Recycle
 
         if (article.urlToImage != "null") {
             holder.urlToImage.visibility = View.VISIBLE
-            holder.urlToImage.layoutParams.height = 750
+            holder.urlToImage.layoutParams.height = LayoutParams.WRAP_CONTENT
             Glide.with(holder.itemView.context)
                 .load(article.urlToImage)
                 .into(holder.urlToImage)
