@@ -1,5 +1,7 @@
 package com.example.newsapp
 
+import android.content.ContentValues.TAG
+import android.util.Log
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -8,6 +10,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.io.BufferedReader
+import java.io.FileNotFoundException
 import java.io.InputStreamReader
 import java.net.URL
 import javax.net.ssl.HttpsURLConnection
@@ -26,49 +29,66 @@ class APIRequests {
     )
 
     @OptIn(DelicateCoroutinesApi::class)
-    fun topStoriesRequest(country: String, newsApiKey: String, callback: (MutableList<Article>) -> Unit) {
-        GlobalScope.launch(Dispatchers.IO) {
-        val url = URL("https://newsapi.org/v2/top-headlines?country=$country&apiKey=$newsApiKey")
+    fun topStoriesRequest(country: String, newsApiKey: String, callback: (MutableList<Article>, String?) -> Unit) {
+        GlobalScope.launch(Dispatchers.IO) { // Retrieves the top stories for a given country
+            try {
+                val url =
+                    URL("https://newsapi.org/v2/top-headlines?country=$country&apiKey=$newsApiKey") // API URL
 
-        with(url.openConnection() as HttpsURLConnection) {
-            requestMethod = "GET"
-            setRequestProperty("User-Agent", "Mozilla/126.0")
+                with(url.openConnection() as HttpsURLConnection) {
+                    requestMethod = "GET"
+                    setRequestProperty("User-Agent", "Mozilla/126.0")
 
-            val response = StringBuilder()
-            val reader = BufferedReader(InputStreamReader(inputStream))
-            var line: String?
+                    val response = StringBuilder()
+                    val reader = BufferedReader(InputStreamReader(inputStream))
+                    var line: String?
 
-            while (reader.readLine().also { line = it } != null) {
-                response.append(line).append("\n")
+                    while (reader.readLine().also { line = it } != null) {
+                        response.append(line).append("\n")
+                    } // Appends each line onto the response variable
+                    reader.close()
+
+                    val articles = parseArticles(response.toString()) // Converts response to a string
+                    callback(articles, null) // Returns the articles with no error
+                }
             }
-            reader.close()
+            catch (exception: FileNotFoundException) {
+                Log.d(TAG, "API Rate Limit Reached: $exception")
 
-            val articles = parseArticles(response.toString())
-            callback(articles)
+                callback(mutableListOf(), "API error occurred") // If API limit has been reached, returns an empty list and an error string
             }
         }
     }
 
+    // Functions similarly to topStoriesRequest, but returns results for a specific category (i.e., Business, Technology, Sports)
     @OptIn(DelicateCoroutinesApi::class)
-    fun categoryRequests(country: String, categoryName: String, newsApiKey: String, callback: (MutableList<Article>) -> Unit) {
+    fun categoryRequests(country: String, categoryName: String, newsApiKey: String, callback: (MutableList<Article>, String?) -> Unit) {
         GlobalScope.launch(Dispatchers.IO) {
-            val url = URL("https://newsapi.org/v2/top-headlines?country=$country&category=$categoryName&apiKey=$newsApiKey")
+            try {
+                val url =
+                    URL("https://newsapi.org/v2/top-headlines?country=$country&category=$categoryName&apiKey=$newsApiKey")
 
-            with(url.openConnection() as HttpsURLConnection) {
-                requestMethod = "GET"
-                setRequestProperty("User-Agent", "Mozilla/126.0")
+                with(url.openConnection() as HttpsURLConnection) {
+                    requestMethod = "GET"
+                    setRequestProperty("User-Agent", "Mozilla/126.0")
 
-                val response = StringBuilder()
-                val reader = BufferedReader(InputStreamReader(inputStream))
-                var line: String?
+                    val response = StringBuilder()
+                    val reader = BufferedReader(InputStreamReader(inputStream))
+                    var line: String?
 
-                while (reader.readLine().also { line = it } != null) {
-                    response.append(line).append("\n")
+                    while (reader.readLine().also { line = it } != null) {
+                        response.append(line).append("\n")
+                    }
+                    reader.close()
+
+                    val articles = parseArticles(response.toString())
+                    callback(articles, null)
                 }
-                reader.close()
+            }
+            catch (exception: FileNotFoundException) {
+                Log.d(TAG, "API Rate Limit Reached: $exception")
 
-                val articles = parseArticles(response.toString())
-                callback(articles)
+                callback(mutableListOf(), "API error occurred")
             }
         }
     }
@@ -101,6 +121,7 @@ class APIRequests {
     }
 }
 
+// Parses the article data into fields on an Article object so that specific fields can be requested later
 private fun parseArticles(jsonResponse: String): MutableList<APIRequests.Article> {
     val articles = mutableListOf<APIRequests.Article>()
     val jsonObject = JSONObject(jsonResponse)

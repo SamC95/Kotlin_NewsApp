@@ -9,6 +9,7 @@ import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
@@ -120,13 +121,18 @@ class NewsActivity : ComponentActivity(), NewsTypeAdapter.OnItemClickListener {
 
     // Loads the top stories for a given country based on the location retrieved
     private fun loadTopStories(countryCode: String, apiKey: String) {
-        apiRequests.topStoriesRequest(countryCode, apiKey) { response ->
+        apiRequests.topStoriesRequest(countryCode, apiKey) { response, errorMessage: String? ->
             runOnUiThread {
-                val articlesAdapter = ArticlesAdapter(response)
-                val newsRecyclerView: RecyclerView = findViewById(R.id.newsArticlesView)
+                if (errorMessage != null) { // If API limit has been reached
+                    Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
+                }
+                else {
+                    val articlesAdapter = ArticlesAdapter(response)
+                    val newsRecyclerView: RecyclerView = findViewById(R.id.newsArticlesView)
 
-                newsRecyclerView.layoutManager = LinearLayoutManager(this)
-                newsRecyclerView.adapter = articlesAdapter
+                    newsRecyclerView.layoutManager = LinearLayoutManager(this)
+                    newsRecyclerView.adapter = articlesAdapter
+                }
             }
         }
     }
@@ -136,13 +142,18 @@ class NewsActivity : ComponentActivity(), NewsTypeAdapter.OnItemClickListener {
         if (data == "Top Stories") { // if top stories button is pressed, load top stories again
             loadTopStories(countryCode, apiKey)
         } else { // If any other button is pressed, category is selected
-            apiRequests.categoryRequests(countryCode, data.lowercase(), apiKey) { response -> // data is set to lowercase to match api fields
+            apiRequests.categoryRequests(countryCode, data.lowercase(), apiKey) { response, errorMessage: String? -> // data is set to lowercase to match api fields
                 runOnUiThread {
-                    val articlesAdapter = ArticlesAdapter(response)
-                    val newsRecyclerView: RecyclerView = findViewById(R.id.newsArticlesView)
+                    if (errorMessage != null) { // If API limit has been reached
+                        Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
+                    }
+                    else {
+                        val articlesAdapter = ArticlesAdapter(response)
+                        val newsRecyclerView: RecyclerView = findViewById(R.id.newsArticlesView)
 
-                    newsRecyclerView.layoutManager = LinearLayoutManager(this)
-                    newsRecyclerView.adapter = articlesAdapter
+                        newsRecyclerView.layoutManager = LinearLayoutManager(this)
+                        newsRecyclerView.adapter = articlesAdapter
+                    }
                 }
             }
         }
