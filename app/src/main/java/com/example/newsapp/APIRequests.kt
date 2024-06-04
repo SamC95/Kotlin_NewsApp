@@ -140,12 +140,13 @@ private fun parseArticles(jsonResponse: String): MutableList<APIRequests.Article
         val publishDate = articleObject.getString("publishedAt")
         val content = articleObject.optString("content")
 
-        articles.add(
-            APIRequests.Article(
-                sourceId, sourceName, author, title, description,
-                url, urlToImage, publishDate, content
+        if (title != "[Removed]") { // Filter out deleted articles
+            articles.add(
+                APIRequests.Article(
+                    sourceId, sourceName, author, title, description,
+                    url, urlToImage, publishDate, content)
             )
-        )
+        }
     }
     return articles
 }
