@@ -57,7 +57,7 @@ class ArticlesAdapter(private val articles: List<APIRequests.Article>) : Recycle
 }
 
 fun formatDateTime(dateTimeString: String): String {
-    val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
+    val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
     val outputFormat = SimpleDateFormat("dd/MM/yyyy 'at' HH:mm:ss", Locale.getDefault())
     val date = inputFormat.parse(dateTimeString)
     return outputFormat.format(date ?: Date())

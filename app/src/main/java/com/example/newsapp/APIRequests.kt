@@ -60,6 +60,39 @@ class APIRequests {
         }
     }
 
+    // Function for retrieving search results from the API based on a specific user search input
+    @OptIn(DelicateCoroutinesApi::class)
+    fun searchRequests(newsApiKey: String, userInput: String, callback: (MutableList<Article>, String?) -> Unit) {
+        GlobalScope.launch(Dispatchers.IO) {
+            try {
+                val url =
+                    URL("https://newsapi.org/v2/everything?q=$userInput&apiKey=$newsApiKey") // API URL
+
+                with(url.openConnection() as HttpsURLConnection) {
+                    requestMethod = "GET"
+                    setRequestProperty("User-Agent", "Mozilla/126.0")
+
+                    val response = StringBuilder()
+                    val reader = BufferedReader(InputStreamReader(inputStream))
+                    var line: String?
+
+                    while (reader.readLine().also { line = it } != null) {
+                        response.append(line).append("\n")
+                    } // Appends each line onto the response variable
+                    reader.close()
+
+                    val articles = parseArticles(response.toString()) // Converts response to a string
+                    callback(articles, null) // Returns th articles with no error
+                }
+            }
+            catch (exception: FileNotFoundException) {
+                Log.d(TAG, "API Rate Limit Reached: $exception")
+
+                callback(mutableListOf(), "API error occurred") // If API limit has been reached, return an empty list and error string
+            }
+        }
+    }
+
     // Functions similarly to topStoriesRequest, but returns results for a specific category (i.e., Business, Technology, Sports)
     @OptIn(DelicateCoroutinesApi::class)
     fun categoryRequests(country: String, categoryName: String, newsApiKey: String, callback: (MutableList<Article>, String?) -> Unit) {

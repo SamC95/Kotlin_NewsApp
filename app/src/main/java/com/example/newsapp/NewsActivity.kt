@@ -8,10 +8,14 @@ import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
+import android.view.inputmethod.EditorInfo
 import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.ui.input.key.KeyEvent
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,6 +30,8 @@ import java.util.Locale
 
 class NewsActivity : ComponentActivity(), NewsTypeAdapter.OnItemClickListener {
     private lateinit var logoutButton: Button
+    private lateinit var noResultsText: TextView
+    private lateinit var newsSearchBar: EditText
 
     private lateinit var auth: FirebaseAuth
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -78,7 +84,10 @@ class NewsActivity : ComponentActivity(), NewsTypeAdapter.OnItemClickListener {
 
         val newsTypeAdapter = NewsTypeAdapter(dataSet, this)
         recyclerView.adapter = newsTypeAdapter
+
         logoutButton = findViewById(R.id.logoutButton)
+        noResultsText = findViewById(R.id.noResults)
+        newsSearchBar = findViewById(R.id.newsSearchBar)
 
         // Sets up firebase authentication
         auth = Firebase.auth
@@ -109,6 +118,24 @@ class NewsActivity : ComponentActivity(), NewsTypeAdapter.OnItemClickListener {
                 } // Temporary Code
             }
 
+        newsSearchBar.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE
+                || actionId == EditorInfo.IME_ACTION_GO
+                || actionId == EditorInfo.IME_ACTION_SEARCH) {
+
+                val userInput = newsSearchBar.text.toString()
+
+                if (userInput != "") {
+                    performSearch(apiKey, userInput)
+                }
+
+                true
+            }
+            else {
+                false
+            }
+        }
+
         // Logout functionality
         logoutButton.setOnClickListener {
             Firebase.auth.signOut()
@@ -132,6 +159,39 @@ class NewsActivity : ComponentActivity(), NewsTypeAdapter.OnItemClickListener {
 
                     newsRecyclerView.layoutManager = LinearLayoutManager(this)
                     newsRecyclerView.adapter = articlesAdapter
+
+                    if (response.isEmpty()) { // If no results, display a message informing the user.
+                        // Shouldn't happen in normal use of application for this function
+                        noResultsText.text = getString(R.string.no_results_found)
+                    }
+                    else {
+                        noResultsText.text = ""
+                    }
+                }
+            }
+        }
+    }
+
+    // Loads news articles for a specific search request
+    private fun performSearch(apiKey: String, userInput: String) {
+        apiRequests.searchRequests(apiKey, userInput) { response, errorMessage: String? ->
+            runOnUiThread {
+                if (errorMessage != null) { // If API limit has been reached
+                    Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
+                }
+                else {
+                    val articlesAdapter = ArticlesAdapter(response)
+                    val newsRecyclerView: RecyclerView = findViewById(R.id.newsArticlesView)
+
+                    newsRecyclerView.layoutManager = LinearLayoutManager(this)
+                    newsRecyclerView.adapter = articlesAdapter
+
+                    if (response.isEmpty()) { // If no results for search, display appropriate message to user
+                        noResultsText.text = getString(R.string.no_results_found)
+                    }
+                    else {
+                        noResultsText.text = ""
+                    }
                 }
             }
         }
@@ -153,6 +213,14 @@ class NewsActivity : ComponentActivity(), NewsTypeAdapter.OnItemClickListener {
 
                         newsRecyclerView.layoutManager = LinearLayoutManager(this)
                         newsRecyclerView.adapter = articlesAdapter
+
+                        if (response.isEmpty()) { // If there are no results, display appropriate message
+                            // Shouldn't happen in normal use of this application
+                            noResultsText.text = getString(R.string.no_results_found)
+                        }
+                        else {
+                            noResultsText.text = ""
+                        }
                     }
                 }
             }

@@ -42,4 +42,5 @@
     <string name="navigation_bar_button">Navigation Bar Button</string>
     <string name="search_button">Search Button</string>
     <string name="news_article_image">News Article Image</string>
+    <string name="no_results_found">No results found</string>
 </resources>
