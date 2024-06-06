@@ -12,30 +12,30 @@ data class UserData(
 )
 
 class UserDataManager {
-    private val db = FirebaseFirestore.getInstance()
-    private val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
+    private val db = FirebaseFirestore.getInstance() // Sets up the firestore database
+    private val currentUserId = FirebaseAuth.getInstance().currentUser?.uid // Gets the currently logged in user's id
 
     fun getUserData(completion: (UserData?) -> Unit) {
         currentUserId?.let { uid ->
-            val docRef = db.collection("users").document(uid)
+            val docRef = db.collection("users").document(uid) // Get appropriate document from firebase based on uid
 
             docRef.get()
                 .addOnSuccessListener {
-                    if (it != null) {
+                    if (it != null) { // If field is found via that uid, get the data
                         val firstName = it.getField<String>("firstName")
                         val surname = it.getField<String>("surname")
                         val emailAddress = it.getField<String>("email")
 
-                        val userData = UserData(firstName, surname, emailAddress)
+                        val userData = UserData(firstName, surname, emailAddress) // Store data into UserData object
 
-                        completion(userData)
+                        completion(userData) // Returns userData
                     }
                     else {
-                        completion(null)
+                        completion(null) // Returns nothing if the document was not found
                     }
                 }.addOnFailureListener { exception ->
                     Log.e("UserDataManager", "Error getting user data: $exception")
-                    completion(null)
+                    completion(null) // Handles error
                 }
         }
     }

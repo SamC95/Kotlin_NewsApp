@@ -66,8 +66,8 @@ class AccCreationActivity : ComponentActivity() {
             val passwordValid = validatePassword(passwordField, confirmPassField)
 
             if (firstNameValid && surnameValid && emailValid && passwordValid) {
-                val fName = firstNameField.text.toString().trim() // Converts to string and trims
-                val sName = surnameField.text.toString().trim()
+                val fName = firstNameField.text.toString().replaceFirstChar(Char::uppercaseChar).trim() // Converts to string, capitalises and trims
+                val sName = surnameField.text.toString().replaceFirstChar(Char::uppercaseChar).trim()
                 val email = emailAddressField.text.toString().trim()
 
                 auth.createUserWithEmailAndPassword( // Attempts to add user to firebase authentication
