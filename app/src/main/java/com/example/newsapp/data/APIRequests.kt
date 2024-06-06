@@ -1,6 +1,6 @@
-package com.example.newsapp
+package com.example.newsapp.data
 
-import android.content.ContentValues.TAG
+import android.content.ContentValues
 import android.util.Log
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
@@ -48,12 +48,13 @@ class APIRequests {
                     } // Appends each line onto the response variable
                     reader.close()
 
-                    val articles = parseArticles(response.toString()) // Converts response to a string
+                    val articles =
+                        parseArticles(response.toString()) // Parses response into an Article Class object
                     callback(articles, null) // Returns the articles with no error
                 }
             }
             catch (exception: FileNotFoundException) {
-                Log.d(TAG, "API Rate Limit Reached: $exception")
+                Log.d(ContentValues.TAG, "API Rate Limit Reached: $exception")
 
                 callback(mutableListOf(), "API error occurred") // If API limit has been reached, returns an empty list and an error string
             }
@@ -81,12 +82,13 @@ class APIRequests {
                     } // Appends each line onto the response variable
                     reader.close()
 
-                    val articles = parseArticles(response.toString()) // Converts response to a string
+                    val articles =
+                        parseArticles(response.toString()) // Parses response into an Article Class object
                     callback(articles, null) // Returns th articles with no error
                 }
             }
             catch (exception: FileNotFoundException) {
-                Log.d(TAG, "API Rate Limit Reached: $exception")
+                Log.d(ContentValues.TAG, "API Rate Limit Reached: $exception")
 
                 callback(mutableListOf(), "API error occurred") // If API limit has been reached, return an empty list and error string
             }
@@ -119,7 +121,7 @@ class APIRequests {
                 }
             }
             catch (exception: FileNotFoundException) {
-                Log.d(TAG, "API Rate Limit Reached: $exception")
+                Log.d(ContentValues.TAG, "API Rate Limit Reached: $exception")
 
                 callback(mutableListOf(), "API error occurred")
             }
@@ -152,35 +154,34 @@ class APIRequests {
                 }
         }
     }
-}
 
-// Parses the article data into fields on an Article object so that specific fields can be requested later
-private fun parseArticles(jsonResponse: String): MutableList<APIRequests.Article> {
-    val articles = mutableListOf<APIRequests.Article>()
-    val jsonObject = JSONObject(jsonResponse)
-    val jsonArray = jsonObject.getJSONArray("articles")
+    // Parses the article data into fields on an Article object so that specific fields can be requested later
+    private fun parseArticles(jsonResponse: String): MutableList<APIRequests.Article> {
+        val articles = mutableListOf<APIRequests.Article>()
+        val jsonObject = JSONObject(jsonResponse)
+        val jsonArray = jsonObject.getJSONArray("articles")
 
-    for (i in 0 until jsonArray.length()) {
-        val articleObject = jsonArray.getJSONObject(i)
+        for (i in 0 until jsonArray.length()) {
+            val articleObject = jsonArray.getJSONObject(i)
 
-        val sourceId = articleObject.getJSONObject("source").getString("id")
-        val sourceName = articleObject.getJSONObject("source").getString("name")
-        val author = articleObject.optString("author")
-        val title = articleObject.getString("title")
-        val description = articleObject.getString("description")
-        val url = articleObject.getString("url")
-        val urlToImage = articleObject.optString("urlToImage")
-        val publishDate = articleObject.getString("publishedAt")
-        val content = articleObject.optString("content")
+            val sourceId = articleObject.getJSONObject("source").getString("id")
+            val sourceName = articleObject.getJSONObject("source").getString("name")
+            val author = articleObject.optString("author")
+            val title = articleObject.getString("title")
+            val description = articleObject.getString("description")
+            val url = articleObject.getString("url")
+            val urlToImage = articleObject.optString("urlToImage")
+            val publishDate = articleObject.getString("publishedAt")
+            val content = articleObject.optString("content")
 
-        if (title != "[Removed]") { // Filter out deleted articles
-            articles.add(
-                APIRequests.Article(
-                    sourceId, sourceName, author, title, description,
-                    url, urlToImage, publishDate, content)
-            )
+            if (title != "[Removed]") { // Filter out deleted articles
+                articles.add(
+                    APIRequests.Article(
+                        sourceId, sourceName, author, title, description,
+                        url, urlToImage, publishDate, content)
+                )
+            }
         }
+        return articles
     }
-    return articles
 }
-

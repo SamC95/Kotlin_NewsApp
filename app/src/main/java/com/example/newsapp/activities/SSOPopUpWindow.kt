@@ -1,4 +1,4 @@
-package com.example.newsapp
+package com.example.newsapp.activities
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.PopupWindow
+import com.example.newsapp.R
 
 class SSOPopUpWindow(private val context: Context) {
     private var backgroundDim: View? = null

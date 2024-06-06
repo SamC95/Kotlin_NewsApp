@@ -1,4 +1,4 @@
-package com.example.newsapp
+package com.example.newsapp.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +8,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.newsapp.data.APIRequests
+import com.example.newsapp.R
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale

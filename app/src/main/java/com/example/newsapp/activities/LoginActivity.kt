@@ -1,4 +1,4 @@
-package com.example.newsapp
+package com.example.newsapp.activities
 
 import android.content.ContentValues.TAG
 import android.content.Intent
@@ -10,6 +10,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import com.example.newsapp.R
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth

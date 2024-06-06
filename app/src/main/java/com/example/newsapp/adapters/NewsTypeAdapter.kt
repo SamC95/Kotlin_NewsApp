@@ -1,11 +1,11 @@
-package com.example.newsapp
+package com.example.newsapp.adapters
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView.OnItemClickListener
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.newsapp.R
 
 class NewsTypeAdapter(private val dataSet: List<String>, private val itemClickListener: OnItemClickListener) :
     RecyclerView.Adapter<NewsTypeAdapter.NewsTypeHolder>() {

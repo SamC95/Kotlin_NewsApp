@@ -1,8 +1,7 @@
-package com.example.newsapp
+package com.example.newsapp.activities
 
 import android.Manifest
 import android.content.ContentValues.TAG
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.Location
@@ -11,30 +10,43 @@ import android.util.Log
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.ui.input.key.KeyEvent
 import androidx.core.app.ActivityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.newsapp.data.APIRequests
+import com.example.newsapp.adapters.ArticlesAdapter
+import com.example.newsapp.BuildConfig
+import com.example.newsapp.data.CountryCodeChecker
+import com.example.newsapp.adapters.NewsTypeAdapter
+import com.example.newsapp.data.UserDataManager
+import com.example.newsapp.R
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.material.navigation.NavigationView
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
-import com.google.firebase.firestore.getField
+import java.util.Calendar
 import java.util.Locale
 
 class NewsActivity : ComponentActivity(), NewsTypeAdapter.OnItemClickListener {
-    private lateinit var logoutButton: Button
     private lateinit var noResultsText: TextView
     private lateinit var newsSearchBar: EditText
+    private lateinit var navHeaderText: TextView
 
     private lateinit var auth: FirebaseAuth
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+
+    private lateinit var drawerLayout: DrawerLayout
+    private lateinit var navView: NavigationView
+    private lateinit var navButton: ImageButton
 
     private val dataSet = listOf(
         "Top Stories", "Business", "General", "Health", "Entertainment",
@@ -55,7 +67,7 @@ class NewsActivity : ComponentActivity(), NewsTypeAdapter.OnItemClickListener {
 
     private val apiRequests = APIRequests()
     private val countryCodeChecker = CountryCodeChecker()
-    private val db = Firebase.firestore
+    private val userDataManager = UserDataManager()
 
     private val apiKey = BuildConfig.NEWS_API_KEY
     private var countryCode = "us" // Default case
@@ -73,6 +85,15 @@ class NewsActivity : ComponentActivity(), NewsTypeAdapter.OnItemClickListener {
         }
     }
 
+    private val calendar: Calendar = Calendar.getInstance()
+    private val currentHour = calendar.get(Calendar.HOUR_OF_DAY) // Gets the current hour based on the device clock
+
+    private val navHeaderGreeting = when(currentHour) {
+        in 0..11 -> "Good morning"
+        in 12..16 -> "Good afternoon"
+        else -> "Good evening"
+    } // Depending on the current time, alters the string to display an appropriate message for that time
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_newsfeed)
@@ -83,9 +104,16 @@ class NewsActivity : ComponentActivity(), NewsTypeAdapter.OnItemClickListener {
         recyclerView.layoutManager = layoutManager
 
         val newsTypeAdapter = NewsTypeAdapter(dataSet, this)
-        recyclerView.adapter = newsTypeAdapter
+        recyclerView.adapter = newsTypeAdapter // Recycler view for the horizontal bar of news type buttons (i.e., Health, Entertainment, etc)
 
-        logoutButton = findViewById(R.id.logoutButton)
+        drawerLayout = findViewById(R.id.drawer_layout)
+        navView = findViewById(R.id.nav_view)
+        NavigationMenuListener.setListener(navView, this) // Sets up navigation menu buttons functionality
+
+        val headerView = navView.getHeaderView(0)
+        navHeaderText = headerView.findViewById(R.id.navHeaderText)
+
+        navButton = findViewById(R.id.nav_button)
         noResultsText = findViewById(R.id.noResults)
         newsSearchBar = findViewById(R.id.newsSearchBar)
 
@@ -104,45 +132,38 @@ class NewsActivity : ComponentActivity(), NewsTypeAdapter.OnItemClickListener {
             requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
 
-        // Gets user data from Firestore
-        val docRef = db.collection("users").document(FirebaseAuth.getInstance().currentUser!!.uid)
-
-        docRef.get() // Test code that correct user is logged in
-            .addOnSuccessListener {
-                if (it != null) {
-                    Log.d(TAG, "${it.id} => ${it.data}")
-
-                    val firstName = it.getField<String>("firstName")
-                    val surname = it.getField<String>("surname")
-
-                } // Temporary Code
+        userDataManager.getUserData { userData ->
+            if (userData != null) { // If user data is retrieved
+                val firstName = userData.firstName
+                // Update text with appropriate name
+                navHeaderText.text =
+                    getString(R.string.navHeaderGreeting, navHeaderGreeting, firstName)
             }
+            else {
+                navHeaderText.text = getString(R.string.navHeaderGreetingNoName, navHeaderGreeting)
+            }
+        }
+
+        navButton.setOnClickListener {
+            drawerLayout.openDrawer(navView)
+        }
 
         newsSearchBar.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE
                 || actionId == EditorInfo.IME_ACTION_GO
-                || actionId == EditorInfo.IME_ACTION_SEARCH) {
+                || actionId == EditorInfo.IME_ACTION_SEARCH
+            ) { // Checks if the user is done with inputting text into the search bar
 
-                val userInput = newsSearchBar.text.toString()
+                val userInput = newsSearchBar.text.toString() // Gets the user input
 
-                if (userInput != "") {
+                if (userInput != "") { // If the input is not empty, perform an API search based on that input
                     performSearch(apiKey, userInput)
                 }
 
                 true
-            }
-            else {
+            } else {
                 false
             }
-        }
-
-        // Logout functionality
-        logoutButton.setOnClickListener {
-            Firebase.auth.signOut()
-
-            val logoutIntent = Intent(this, MainActivity::class.java)
-            startActivity(logoutIntent)
-            finish()
         }
     }
 

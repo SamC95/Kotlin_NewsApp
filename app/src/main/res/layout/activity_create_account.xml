@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/backgroundPurple"
     android:orientation="vertical"
-    tools:context=".AccCreationActivity">
+    tools:context=".activities.AccCreationActivity">
 
     <ImageView
         android:id="@+id/newsLogo"

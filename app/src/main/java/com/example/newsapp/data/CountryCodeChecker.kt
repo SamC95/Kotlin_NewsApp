@@ -1,4 +1,4 @@
-package com.example.newsapp
+package com.example.newsapp.data
 
 // Matches the given country string from geocoder to its corresponding country code (ISO-3166 alpha2)
 class CountryCodeChecker {
