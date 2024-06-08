@@ -1,6 +1,7 @@
 package com.example.newsapp.data
 
 // Matches the given country string from geocoder to its corresponding country code (ISO-3166 alpha2)
+// Only includes countries supported by NewsAPI
 class CountryCodeChecker {
     fun checkCountryCode(country: String): String {
         val countryCode = when (country) {
@@ -31,7 +32,7 @@ class CountryCodeChecker {
             "Italy" -> "it"
             "Japan" -> "jp"
             "Republic of Korea" -> "kr"
-            "South Korea" -> "kr"
+            "South Korea" -> "kr" // Both names for South Korea
             "Lithuania" -> "lt"
             "Latvia" -> "lv"
             "Morocco" -> "ma"
@@ -54,7 +55,7 @@ class CountryCodeChecker {
             "Slovakia" -> "sk"
             "Thailand" -> "th"
             "Türkiye" -> "tr"
-            "Turkey" -> "tr"
+            "Turkey" -> "tr" // Both spellings for Türkiye
             "Taiwan" -> "tw"
             "Ukraine" -> "ua"
             "United States" -> "us"

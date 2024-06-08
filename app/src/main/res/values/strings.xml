@@ -49,4 +49,7 @@
     <string name="logout">Logout</string>
     <string name="navHeaderGreeting">%1$s, %2$s!</string>
     <string name="navHeaderGreetingNoName">%1$s!</string>
+    <string name="placeholder_image">Placeholder image</string>
+    <string name="articleSource">- %1$s</string>
+    <string name="back">Back</string>
 </resources>

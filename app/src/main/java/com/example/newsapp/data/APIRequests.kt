@@ -1,6 +1,8 @@
 package com.example.newsapp.data
 
 import android.content.ContentValues
+import android.os.Parcel
+import android.os.Parcelable
 import android.util.Log
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
@@ -16,7 +18,7 @@ import java.net.URL
 import javax.net.ssl.HttpsURLConnection
 
 class APIRequests {
-    data class Article(
+    data class Article( // Handles the data class for an Article, along with the functionality required to make it Parcelable
         val sourceId: String?,
         val sourceName: String,
         val author: String?,
@@ -26,14 +28,52 @@ class APIRequests {
         val urlToImage: String?,
         val publishDate: String,
         val articleContent: String?
-    )
+    ) : Parcelable {
+        constructor(parcel: Parcel) : this(
+            parcel.readString(),
+            parcel.readString().toString(),
+            parcel.readString(),
+            parcel.readString().toString(),
+            parcel.readString().toString(),
+            parcel.readString().toString(),
+            parcel.readString(),
+            parcel.readString().toString(),
+            parcel.readString()
+        )
+
+        override fun writeToParcel(parcel: Parcel, flags: Int) {
+            parcel.writeString(sourceId)
+            parcel.writeString(sourceName)
+            parcel.writeString(author)
+            parcel.writeString(title)
+            parcel.writeString(description)
+            parcel.writeString(url)
+            parcel.writeString(urlToImage)
+            parcel.writeString(publishDate)
+            parcel.writeString(articleContent)
+        }
+
+        override fun describeContents(): Int {
+            return 0
+        }
+
+        companion object CREATOR : Parcelable.Creator<Article> {
+            override fun createFromParcel(parcel: Parcel): Article {
+                return Article(parcel)
+            }
+
+            override fun newArray(size: Int): Array<Article?> {
+                return arrayOfNulls(size)
+            }
+        }
+    }
 
     @OptIn(DelicateCoroutinesApi::class)
     fun topStoriesRequest(country: String, newsApiKey: String, callback: (MutableList<Article>, String?) -> Unit) {
         GlobalScope.launch(Dispatchers.IO) { // Retrieves the top stories for a given country
             try {
                 val url =
-                    URL("https://newsapi.org/v2/top-headlines?country=$country&apiKey=$newsApiKey") // API URL
+                    URL("https://newsapi.org/v2/top-headlines?country=$country&apiKey=$newsApiKey&pageSize=100") // API URL
 
                 with(url.openConnection() as HttpsURLConnection) {
                     requestMethod = "GET"
@@ -67,7 +107,7 @@ class APIRequests {
         GlobalScope.launch(Dispatchers.IO) {
             try {
                 val url =
-                    URL("https://newsapi.org/v2/everything?q=$userInput&apiKey=$newsApiKey") // API URL
+                    URL("https://newsapi.org/v2/everything?q=$userInput&apiKey=$newsApiKey&pageSize=100") // API URL
 
                 with(url.openConnection() as HttpsURLConnection) {
                     requestMethod = "GET"
@@ -101,7 +141,7 @@ class APIRequests {
         GlobalScope.launch(Dispatchers.IO) {
             try {
                 val url =
-                    URL("https://newsapi.org/v2/top-headlines?country=$country&category=$categoryName&apiKey=$newsApiKey")
+                    URL("https://newsapi.org/v2/top-headlines?country=$country&category=$categoryName&apiKey=$newsApiKey&pageSize=100")
 
                 with(url.openConnection() as HttpsURLConnection) {
                     requestMethod = "GET"
@@ -128,7 +168,7 @@ class APIRequests {
         }
     }
 
-    fun storeArticles(articles: List<APIRequests.Article>) {
+    fun storeArticles(articles: List<Article>) {
         val firestore = Firebase.firestore
         val articlesCollection = firestore.collection("newsArticles")
 
@@ -156,8 +196,8 @@ class APIRequests {
     }
 
     // Parses the article data into fields on an Article object so that specific fields can be requested later
-    private fun parseArticles(jsonResponse: String): MutableList<APIRequests.Article> {
-        val articles = mutableListOf<APIRequests.Article>()
+    private fun parseArticles(jsonResponse: String): MutableList<Article> {
+        val articles = mutableListOf<Article>()
         val jsonObject = JSONObject(jsonResponse)
         val jsonArray = jsonObject.getJSONArray("articles")
 
@@ -174,9 +214,13 @@ class APIRequests {
             val publishDate = articleObject.getString("publishedAt")
             val content = articleObject.optString("content")
 
-            if (title != "[Removed]") { // Filter out deleted articles
+            /*
+            Filters out deleted articles, and ensures every article has an image. If it lacks
+            an image it is discarded, to ensure consistency.
+            */
+            if (title != "[Removed]" && urlToImage != "null") {
                 articles.add(
-                    APIRequests.Article(
+                    Article(
                         sourceId, sourceName, author, title, description,
                         url, urlToImage, publishDate, content)
                 )

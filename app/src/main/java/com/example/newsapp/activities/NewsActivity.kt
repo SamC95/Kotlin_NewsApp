@@ -2,13 +2,13 @@ package com.example.newsapp.activities
 
 import android.Manifest
 import android.content.ContentValues.TAG
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.inputmethod.EditorInfo
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
@@ -32,11 +32,9 @@ import com.google.android.material.navigation.NavigationView
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
-import com.google.firebase.firestore.firestore
-import java.util.Calendar
 import java.util.Locale
 
-class NewsActivity : ComponentActivity(), NewsTypeAdapter.OnItemClickListener {
+class NewsActivity : ComponentActivity(), NewsTypeAdapter.OnItemClickListener, ArticlesAdapter.OnArticleClickListener {
     private lateinit var noResultsText: TextView
     private lateinit var newsSearchBar: EditText
     private lateinit var navHeaderText: TextView
@@ -51,18 +49,6 @@ class NewsActivity : ComponentActivity(), NewsTypeAdapter.OnItemClickListener {
     private val dataSet = listOf(
         "Top Stories", "Business", "General", "Health", "Entertainment",
         "Science", "Sport", "Technology"
-    )
-
-    data class Article(
-        val sourceId: String?,
-        val sourceName: String,
-        val author: String?,
-        val title: String,
-        val description: String,
-        val url: String,
-        val urlToImage: String?,
-        val publishDate: String,
-        val articleContent: String?
     )
 
     private val apiRequests = APIRequests()
@@ -85,14 +71,7 @@ class NewsActivity : ComponentActivity(), NewsTypeAdapter.OnItemClickListener {
         }
     }
 
-    private val calendar: Calendar = Calendar.getInstance()
-    private val currentHour = calendar.get(Calendar.HOUR_OF_DAY) // Gets the current hour based on the device clock
-
-    private val navHeaderGreeting = when(currentHour) {
-        in 0..11 -> "Good morning"
-        in 12..16 -> "Good afternoon"
-        else -> "Good evening"
-    } // Depending on the current time, alters the string to display an appropriate message for that time
+    private var articles: List<APIRequests.Article> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -132,17 +111,8 @@ class NewsActivity : ComponentActivity(), NewsTypeAdapter.OnItemClickListener {
             requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
 
-        userDataManager.getUserData { userData ->
-            if (userData != null) { // If user data is retrieved
-                val firstName = userData.firstName
-                // Update text with appropriate name
-                navHeaderText.text =
-                    getString(R.string.navHeaderGreeting, navHeaderGreeting, firstName)
-            }
-            else {
-                navHeaderText.text = getString(R.string.navHeaderGreetingNoName, navHeaderGreeting)
-            }
-        }
+        // Sets up the user greeting on the side bar for this activity
+        userDataManager.setupGreeting(this, navHeaderText)
 
         navButton.setOnClickListener {
             drawerLayout.openDrawer(navView)
@@ -175,7 +145,8 @@ class NewsActivity : ComponentActivity(), NewsTypeAdapter.OnItemClickListener {
                     Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
                 }
                 else {
-                    val articlesAdapter = ArticlesAdapter(response)
+                    articles = response.toList() // Assigns the articles into the global variable
+                    val articlesAdapter = ArticlesAdapter(response, this)
                     val newsRecyclerView: RecyclerView = findViewById(R.id.newsArticlesView)
 
                     newsRecyclerView.layoutManager = LinearLayoutManager(this)
@@ -201,7 +172,8 @@ class NewsActivity : ComponentActivity(), NewsTypeAdapter.OnItemClickListener {
                     Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
                 }
                 else {
-                    val articlesAdapter = ArticlesAdapter(response)
+                    articles = response.toList() // Assigns the articles into the global variable
+                    val articlesAdapter = ArticlesAdapter(response, this)
                     val newsRecyclerView: RecyclerView = findViewById(R.id.newsArticlesView)
 
                     newsRecyclerView.layoutManager = LinearLayoutManager(this)
@@ -229,7 +201,8 @@ class NewsActivity : ComponentActivity(), NewsTypeAdapter.OnItemClickListener {
                         Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
                     }
                     else {
-                        val articlesAdapter = ArticlesAdapter(response)
+                        articles = response.toList() // Assigns the articles into the global variable
+                        val articlesAdapter = ArticlesAdapter(response, this)
                         val newsRecyclerView: RecyclerView = findViewById(R.id.newsArticlesView)
 
                         newsRecyclerView.layoutManager = LinearLayoutManager(this)
@@ -250,13 +223,9 @@ class NewsActivity : ComponentActivity(), NewsTypeAdapter.OnItemClickListener {
 
     private fun getLastLocation() {
         if (ActivityCompat.checkSelfPermission( // Re-check location permission
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED &&
+                this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
             ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
+                this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
         ) {
             fusedLocationClient.lastLocation
                 .addOnSuccessListener { location: Location? ->
@@ -297,5 +266,16 @@ class NewsActivity : ComponentActivity(), NewsTypeAdapter.OnItemClickListener {
     private fun checkPermissions(): Boolean {
         return (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
                 checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+    }
+
+    // Handles the behaviour for if the user clicks on a specific article
+    override fun onArticleClick(position: Int) { //
+        val clickedArticle = articles[position]
+
+        Log.d(TAG, articles[position].description)
+
+        val articleIntent = Intent(this, ArticleActivity::class.java)
+        articleIntent.putExtra("articleData", clickedArticle)
+        startActivity(articleIntent)
     }
 }
