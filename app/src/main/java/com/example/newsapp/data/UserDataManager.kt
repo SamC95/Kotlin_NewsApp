@@ -28,7 +28,7 @@ class UserDataManager {
         else -> "Good evening"
     } // Depending on the current time, alters the string to display an appropriate message for that time
 
-    fun getUserData(completion: (UserData?) -> Unit) {
+     fun getUserData(completion: (UserData?) -> Unit) {
         currentUserId?.let { uid ->
             val docRef = db.collection("users").document(uid) // Get appropriate document from firebase based on uid
 
