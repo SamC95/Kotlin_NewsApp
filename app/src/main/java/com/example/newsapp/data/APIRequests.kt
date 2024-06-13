@@ -168,6 +168,7 @@ class APIRequests {
         }
     }
 
+    // -- NOT USED --
     fun storeArticles(articles: List<Article>) {
         val firestore = Firebase.firestore
         val articlesCollection = firestore.collection("newsArticles")

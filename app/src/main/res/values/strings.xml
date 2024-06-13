@@ -53,4 +53,6 @@
     <string name="articleSource">- %1$s</string>
     <string name="back">Back</string>
     <string name="save_article_button">Save article button</string>
+    <string name="you_haven_t_saved_any_articles_yet">You haven\'t saved any articles yet!</string>
+    <string name="no_saved_articles">No saved articles</string>
 </resources>

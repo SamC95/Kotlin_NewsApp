@@ -177,35 +177,67 @@ class ArticleActivity : ComponentActivity() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid // Gets the user id to serve as the document id
 
         if (userId != null) { // Ensure that the uid is not empty
-            val userDocRef = db.collection("userSavedArticles").document(userId) // Finds the document based on the uid
+            isArticleStored(userId, articleDetails,
+                onSuccess = {
+                    Toast.makeText(baseContext, "Article already saved!", Toast.LENGTH_SHORT).show()
+                },
+                onFailure = {
+                    val userDocRef = db.collection("userSavedArticles").document(userId) // Finds the document based on the uid
 
-            userDocRef.update("articles", FieldValue.arrayUnion(articleDetails)) // Update the document with the article details
-                .addOnSuccessListener {
-                    Toast.makeText(baseContext, "Article Saved", Toast.LENGTH_SHORT).show() // Toast to show success
-                }
-                .addOnFailureListener { error ->
-                    // If there is no document found by that user's uid
-                    if (error is com.google.firebase.firestore.FirebaseFirestoreException &&
-                        error.code == com.google.firebase.firestore.FirebaseFirestoreException.Code.NOT_FOUND) {
+                    userDocRef.update("articles", FieldValue.arrayUnion(articleDetails)) // Update the document with the article details
+                        .addOnSuccessListener {
+                            Toast.makeText(baseContext, "Article Saved", Toast.LENGTH_SHORT).show() // Toast to show success
+                        }
+                        .addOnFailureListener { error ->
+                            // If there is no document found by that user's uid
+                            if (error is com.google.firebase.firestore.FirebaseFirestoreException &&
+                                error.code == com.google.firebase.firestore.FirebaseFirestoreException.Code.NOT_FOUND) {
 
-                        // Creates an initial hashMap to store the data in an arrayList
-                        val initialData = hashMapOf(
-                            "articles" to arrayListOf(articleDetails)
-                        )
-                        userDocRef.set(initialData) // Set the initial data into the firestore document
-                            .addOnSuccessListener {
-                                Toast.makeText(baseContext, "Article Saved", Toast.LENGTH_SHORT).show()
+                                // Creates an initial hashMap to store the data in an arrayList
+                                val initialData = hashMapOf(
+                                    "articles" to arrayListOf(articleDetails)
+                                )
+                                userDocRef.set(initialData) // Set the initial data into the firestore document
+                                    .addOnSuccessListener {
+                                        Toast.makeText(baseContext, "Article Saved", Toast.LENGTH_SHORT).show()
+                                    }
+                                    .addOnFailureListener { exception -> // Handles case where failed to save the article
+                                        Toast.makeText(baseContext, "Failed to save article", Toast.LENGTH_SHORT).show()
+                                        Log.e(TAG, "Error creating document: $exception")
+                                    }
                             }
-                            .addOnFailureListener { exception -> // Handles case where failed to save the article
+                            else { // Handles the case where the error was something other than the specified Firestore exceptions
                                 Toast.makeText(baseContext, "Failed to save article", Toast.LENGTH_SHORT).show()
-                                Log.e(TAG, "Error creating document: $exception")
+                                Log.e(TAG, "Error saving document: $error")
                             }
+                        }
+                }
+            )}
+    }
+
+    private fun isArticleStored(userId: String, articleDetails: APIRequests.Article,
+                                onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+
+        val userDocRef = db.collection("userSavedArticles").document(userId)
+
+        userDocRef.get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    val articlesList = document.get("articles") as? List<Map<String, Any>>
+
+                    if (articlesList != null && articlesList.any { it["title"] == articleDetails.title}) {
+                        onSuccess() // Article already exists in the document
                     }
-                    else { // Handles the case where the error was something other than the specified Firestore exceptions
-                        Toast.makeText(baseContext, "Failed to save article", Toast.LENGTH_SHORT).show()
-                        Log.e(TAG, "Error saving document: $error")
+                    else {
+                        onFailure(Exception("Article does not exist")) // Article does not exist in document
                     }
                 }
-        }
+                else {
+                    onFailure(Exception("Document does not exist")) // Document does not exist
+                }
+            }
+            .addOnSuccessListener { exception ->
+                Log.e(TAG, "Error occurred checking articles: $exception")
+            }
     }
 }

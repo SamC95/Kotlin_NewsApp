@@ -2,7 +2,7 @@ package com.example.newsapp.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
+import android.widget.AdapterView
 import android.widget.ImageButton
 import android.widget.ListView
 import android.widget.TextView
@@ -56,5 +56,13 @@ class ProfileActivity : ComponentActivity() {
 
         val listView: ListView = findViewById(R.id.list_view)
         listView.adapter = adapter
+
+        listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
+            when (position) {
+                3 -> {
+                    startActivity(Intent(this@ProfileActivity, SavedArticlesActivity::class.java))
+                }
+            }
+        }
     }
 }

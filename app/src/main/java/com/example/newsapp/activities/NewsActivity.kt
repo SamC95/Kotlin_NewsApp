@@ -83,7 +83,8 @@ class NewsActivity : ComponentActivity(), NewsTypeAdapter.OnItemClickListener, A
         recyclerView.layoutManager = layoutManager
 
         val newsTypeAdapter = NewsTypeAdapter(dataSet, this)
-        recyclerView.adapter = newsTypeAdapter // Recycler view for the horizontal bar of news type buttons (i.e., Health, Entertainment, etc)
+        recyclerView.adapter = newsTypeAdapter
+        // Recycler view for the horizontal bar of news type buttons (i.e., Health, Entertainment, etc)
 
         drawerLayout = findViewById(R.id.drawer_layout)
         navView = findViewById(R.id.nav_view)
@@ -131,7 +132,8 @@ class NewsActivity : ComponentActivity(), NewsTypeAdapter.OnItemClickListener, A
                 }
 
                 true
-            } else {
+            }
+            else {
                 false
             }
         }
@@ -194,7 +196,8 @@ class NewsActivity : ComponentActivity(), NewsTypeAdapter.OnItemClickListener, A
     override fun onItemClicked(position: Int, data: String) {
         if (data == "Top Stories") { // if top stories button is pressed, load top stories again
             loadTopStories(countryCode, apiKey)
-        } else { // If any other button is pressed, category is selected
+        }
+        else { // If any other button is pressed, category is selected
             apiRequests.categoryRequests(countryCode, data.lowercase(), apiKey) { response, errorMessage: String? -> // data is set to lowercase to match api fields
                 runOnUiThread {
                     if (errorMessage != null) { // If API limit has been reached

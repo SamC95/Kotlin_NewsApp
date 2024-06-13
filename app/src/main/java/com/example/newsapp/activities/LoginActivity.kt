@@ -88,7 +88,11 @@ class LoginActivity : ComponentActivity() {
         }
 
         googleLogin.setOnClickListener {
+            // TO-DO
+        }
 
+        appleLogin.setOnClickListener {
+            // TO-DO
         }
     }
 
