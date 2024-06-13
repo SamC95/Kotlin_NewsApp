@@ -55,6 +55,6 @@
     <string name="save_article_button">Save article button</string>
     <string name="you_haven_t_saved_any_articles_yet">You haven\'t saved any articles yet!</string>
     <string name="no_saved_articles">No saved articles</string>
-    <string name="select_your_country">Select your Country</string>
+    <string name="select_your_country">Select a country</string>
     <string name="image_of_country_flag">Image of country flag</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.example.newsapp.data
 
 import android.content.ContentValues
+import android.content.ContentValues.TAG
 import android.os.Parcel
 import android.os.Parcelable
 import android.util.Log
@@ -98,9 +99,13 @@ class APIRequests {
                 }
             }
             catch (exception: FileNotFoundException) {
-                Log.d(ContentValues.TAG, "API Rate Limit Reached: $exception")
+                Log.d(TAG, "API Rate Limit Reached: $exception")
 
                 callback(mutableListOf(), "API error occurred") // If API limit has been reached, returns an empty list and an error string
+            }
+            catch (e: Exception) {
+                Log.e(TAG, "Network Error Occurred: ${e.message}", e)
+                callback(mutableListOf(), "Network Error occurred: ${e.message}")
             }
         }
     }
@@ -132,9 +137,13 @@ class APIRequests {
                 }
             }
             catch (exception: FileNotFoundException) {
-                Log.d(ContentValues.TAG, "API Rate Limit Reached: $exception")
+                Log.d(TAG, "API Rate Limit Reached: $exception")
 
                 callback(mutableListOf(), "API error occurred") // If API limit has been reached, return an empty list and error string
+            }
+            catch (e: Exception) {
+                Log.e(TAG, "Network error Occurred: ${e.message}", e)
+                callback(mutableListOf(), "Network error occurred: ${e.message}")
             }
         }
     }
@@ -165,9 +174,13 @@ class APIRequests {
                 }
             }
             catch (exception: FileNotFoundException) {
-                Log.d(ContentValues.TAG, "API Rate Limit Reached: $exception")
+                Log.d(TAG, "API Rate Limit Reached: $exception")
 
                 callback(mutableListOf(), "API error occurred")
+            }
+            catch (e: Exception) {
+                Log.e(TAG, "Network Error Occurred: ${e.message}", e)
+                callback(mutableListOf(), "Network Error occurred: ${e.message}")
             }
         }
     }
