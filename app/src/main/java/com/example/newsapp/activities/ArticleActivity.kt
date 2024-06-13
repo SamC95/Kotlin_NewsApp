@@ -13,6 +13,7 @@ import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -118,7 +119,7 @@ class ArticleActivity : ComponentActivity() {
 
         articleSource.text = getString(R.string.articleSource, article.sourceName)
 
-        if (article.urlToImage != null) { // If the article has an image url associated with it
+        if (article.urlToImage != "null") { // If the article has an image url associated with it
             GlobalScope.launch(Dispatchers.IO) {
                 try { // Loads the image from the url outside the main thread
                     val url = article.urlToImage
@@ -128,6 +129,8 @@ class ArticleActivity : ComponentActivity() {
 
                     launch(Dispatchers.Main) {
                         articleImage.setImageBitmap(bitmap) // Sets the image
+                        articleImage.isVisible = true // Make sure the image view is visible
+                        articleImage.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
                     }
 
                     inputStream.close() // Close the input stream once done using it
@@ -138,15 +141,36 @@ class ArticleActivity : ComponentActivity() {
             }
         }
         else {
-            articleImage.isVisible = false
+            GlobalScope.launch(Dispatchers.Main) {
+                articleImage.isVisible = false
+                articleImage.layoutParams.height = 0
+            }
         }
 
         if (article.description != "null") { // If article has a description, display it
-            articleDescription.text = article.description
+            GlobalScope.launch(Dispatchers.Main) {
+                articleDescription.isVisible = true
+                articleDescription.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                articleDescription.text = article.description
+            }
+        }
+        else {
+            GlobalScope.launch(Dispatchers.Main) {
+                articleDescription.isVisible = false
+                articleDescription.layoutParams.height = 0
+            }
         }
 
         if (article.articleContent != "null") { // If article has contents, display it
+            articleContents.isVisible = true
+            articleContents.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
             articleContents.text = article.articleContent
+        }
+        else {
+            GlobalScope.launch(Dispatchers.Main) {
+                articleContents.isVisible = false
+                articleContents.layoutParams.height = 0
+            }
         }
 
         val text = "Read more at: ${article.url}"
@@ -168,6 +192,41 @@ class ArticleActivity : ComponentActivity() {
         // Sets the color of the URL text
         spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, R.color.backgroundPurple)),
             urlStartIndex, urlEndIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+        articleUrl.text = spannableString
+        articleUrl.movementMethod = LinkMovementMethod.getInstance()
+
+        setupUrlSpan() // Sets the spannable string so that the URL is clickable but 'Read More' is not
+    }
+
+    // Handles the clickable area of the text view for the link to the article
+    private fun setupUrlSpan() {
+        val text = "Read more at: ${article.url}"
+
+        val spannableString = SpannableString(text)
+
+        val urlStartIndex = text.indexOf(article.url)
+        val urlEndIndex = urlStartIndex + article.url.length
+        val clickableSpan = object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                val urlLinkIntent = Intent(Intent.ACTION_VIEW, Uri.parse(article.url))
+                startActivity(urlLinkIntent)
+            }
+        }
+
+        // Sets the clickable portion of the text containing the URL
+        spannableString.setSpan(
+            clickableSpan,
+            urlStartIndex,
+            urlEndIndex,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        // Sets the color of the URL text
+        spannableString.setSpan(
+            ForegroundColorSpan(ContextCompat.getColor(this, R.color.backgroundPurple)),
+            urlStartIndex, urlEndIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
 
         articleUrl.text = spannableString
         articleUrl.movementMethod = LinkMovementMethod.getInstance()

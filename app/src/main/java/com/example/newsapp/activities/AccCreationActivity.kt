@@ -81,7 +81,8 @@ class AccCreationActivity : ComponentActivity() {
                             val userMap = hashMapOf( // Creates a hashmap of the user details
                                 "firstName" to fName,
                                 "surname" to sName,
-                                "email" to email
+                                "email" to email,
+                                "region" to null
                             )
 
                             // Gets the UID of the current user to serve as a basis for firestore document

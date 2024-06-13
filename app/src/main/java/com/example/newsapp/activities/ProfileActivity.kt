@@ -43,12 +43,14 @@ class ProfileActivity : ComponentActivity() {
 
         val userIcon = R.drawable.user_24
         val emailIcon = R.drawable.icons8_email_24
+        val regionIcon = R.drawable.icons8_region_24
         val bookmarkIcon = R.drawable.icons8_bookmark_24
 
         val details = listOf(
             SectionDetails(userIcon, "First Name", ""),
             SectionDetails(userIcon, "Surname", ""),
             SectionDetails(emailIcon, "Email Address", ""),
+            SectionDetails(regionIcon, "Country", ""),
             SectionDetails(bookmarkIcon, "Saved Articles", "")
         )
 
@@ -59,7 +61,11 @@ class ProfileActivity : ComponentActivity() {
 
         listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
             when (position) {
-                3 -> {
+                3 -> { // Opens activity for choosing a country
+                    startActivity(Intent(this@ProfileActivity, CountrySelectorActivity::class.java))
+                    finish()
+                }
+                4 -> { // Opens activity for viewing saved articles
                     startActivity(Intent(this@ProfileActivity, SavedArticlesActivity::class.java))
                 }
             }

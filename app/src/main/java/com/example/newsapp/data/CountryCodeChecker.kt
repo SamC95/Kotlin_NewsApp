@@ -15,7 +15,7 @@ class CountryCodeChecker {
             "Canada" -> "ca"
             "Switzerland" -> "ch"
             "China" -> "cn"
-            "Columbia" -> "co"
+            "Colombia" -> "co"
             "Cuba" -> "cu"
             "Czech Republic" -> "cz"
             "Germany" -> "de"

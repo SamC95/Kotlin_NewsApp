@@ -67,11 +67,12 @@ class NewsActivity : ComponentActivity(), NewsTypeAdapter.OnItemClickListener, A
         } else {
             Log.d(TAG, "Location permission denied")
 
-            loadTopStories("us", apiKey) // If region is not allowed, use default (US) location as a basis
+            loadTopStories(apiKey) // If region is not allowed, use default (US) location as a basis
         }
     }
 
     private var articles: List<APIRequests.Article> = emptyList()
+    private var regionResolved = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -140,26 +141,39 @@ class NewsActivity : ComponentActivity(), NewsTypeAdapter.OnItemClickListener, A
     }
 
     // Loads the top stories for a given country based on the location retrieved
-    private fun loadTopStories(countryCode: String, apiKey: String) {
-        apiRequests.topStoriesRequest(countryCode, apiKey) { response, errorMessage: String? ->
-            runOnUiThread {
-                if (errorMessage != null) { // If API limit has been reached
-                    Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
-                }
-                else {
-                    articles = response.toList() // Assigns the articles into the global variable
-                    val articlesAdapter = ArticlesAdapter(response, this)
-                    val newsRecyclerView: RecyclerView = findViewById(R.id.newsArticlesView)
+    private fun loadTopStories(apiKey: String) {
+        userDataManager.checkUserSetRegion { newCountry ->
+            newCountry?.let {
+                countryCode = it
+            } // Checks if the user has set a region themselves, if so override location data
+            regionResolved = true
+            loadStoriesIfReady() // Ensures that we aren't loading data before firestore can be checked
+        }
+    }
 
-                    newsRecyclerView.layoutManager = LinearLayoutManager(this)
-                    newsRecyclerView.adapter = articlesAdapter
-
-                    if (response.isEmpty()) { // If no results, display a message informing the user.
-                        // Shouldn't happen in normal use of application for this function
-                        noResultsText.text = getString(R.string.no_results_found)
+    private fun loadStoriesIfReady() { // Continues loading top stories if firestore has been checked
+        if (regionResolved) {
+            apiRequests.topStoriesRequest(countryCode, apiKey) { response, errorMessage: String? ->
+                runOnUiThread {
+                    if (errorMessage != null) { // If API limit has been reached
+                        Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
                     }
                     else {
-                        noResultsText.text = ""
+                        articles =
+                            response.toList() // Assigns the articles into the global variable
+                        val articlesAdapter = ArticlesAdapter(response, this)
+                        val newsRecyclerView: RecyclerView = findViewById(R.id.newsArticlesView)
+
+                        newsRecyclerView.layoutManager = LinearLayoutManager(this)
+                        newsRecyclerView.adapter = articlesAdapter
+
+                        if (response.isEmpty()) { // If no results, display a message informing the user.
+                            // Shouldn't happen in normal use of application for this function
+                            noResultsText.text = getString(R.string.no_results_found)
+                        }
+                        else {
+                            noResultsText.text = ""
+                        }
                     }
                 }
             }
@@ -195,9 +209,15 @@ class NewsActivity : ComponentActivity(), NewsTypeAdapter.OnItemClickListener, A
     // When one of the horizontal bar options for news type are selected
     override fun onItemClicked(position: Int, data: String) {
         if (data == "Top Stories") { // if top stories button is pressed, load top stories again
-            loadTopStories(countryCode, apiKey)
+            loadTopStories(apiKey)
         }
         else { // If any other button is pressed, category is selected
+            userDataManager.checkUserSetRegion { newCountry ->
+                newCountry?.let {
+                    countryCode = it
+                } // Checks if the user has set a region themselves, if so override location data
+            }
+
             apiRequests.categoryRequests(countryCode, data.lowercase(), apiKey) { response, errorMessage: String? -> // data is set to lowercase to match api fields
                 runOnUiThread {
                     if (errorMessage != null) { // If API limit has been reached
@@ -244,23 +264,23 @@ class NewsActivity : ComponentActivity(), NewsTypeAdapter.OnItemClickListener, A
                             // For example, "United Kingdom" would return "gb" or China would return "cn"
                             countryCode = countryCodeChecker.checkCountryCode(country)
 
-                            loadTopStories(countryCode, apiKey) // Load top stories based on the region retrieved
+                            loadTopStories(apiKey) // Load top stories based on the region retrieved
 
                         } else {
                             Log.d(TAG, "No address found for the provided coordinates.")
 
-                            loadTopStories(countryCode, apiKey) // Load with default (US) data if no region found
+                            loadTopStories(apiKey) // Load with default (US) data if no region found
                         }
                     } else {
                         Log.d(TAG, "Location is null")
 
-                        loadTopStories(countryCode, apiKey) // Load with default (US) data if no region found
+                        loadTopStories(apiKey) // Load with default (US) data if no region found
                     }
                 }
                 .addOnFailureListener { e ->
                     Log.e(TAG, "Error getting location: ${e.message}", e)
 
-                    loadTopStories(countryCode, apiKey) // Load with default (US) data if no region found
+                    loadTopStories(apiKey) // Load with default (US) data if no region found
                 }
         }
     }

@@ -5,6 +5,8 @@ import android.os.Parcel
 import android.os.Parcelable
 import android.util.Log
 import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
@@ -18,6 +20,8 @@ import java.net.URL
 import javax.net.ssl.HttpsURLConnection
 
 class APIRequests {
+    private val userDataManager = UserDataManager()
+
     data class Article( // Handles the data class for an Article, along with the functionality required to make it Parcelable
         val sourceId: String?,
         val sourceName: String,
@@ -219,7 +223,7 @@ class APIRequests {
             Filters out deleted articles, and ensures every article has an image. If it lacks
             an image it is discarded, to ensure consistency.
             */
-            if (title != "[Removed]" && urlToImage != "null") {
+            if (title != "[Removed]") {
                 articles.add(
                     Article(
                         sourceId, sourceName, author, title, description,
@@ -229,4 +233,6 @@ class APIRequests {
         }
         return articles
     }
+
+
 }

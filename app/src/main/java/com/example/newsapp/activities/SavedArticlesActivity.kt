@@ -62,6 +62,7 @@ class SavedArticlesActivity : ComponentActivity(), ArticlesAdapter.OnArticleClic
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = articlesAdapter
 
+        // Loads the articles the user has saved from firestore
         loadSavedArticles()
 
         // Sets up the user greeting on the side bar for this activity

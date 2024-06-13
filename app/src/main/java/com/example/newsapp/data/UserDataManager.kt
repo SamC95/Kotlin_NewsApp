@@ -1,5 +1,6 @@
 package com.example.newsapp.data
 
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.util.Log
 import android.widget.TextView
@@ -12,12 +13,15 @@ import java.util.Calendar
 data class UserData(
     val firstName: String?,
     val surname: String?,
-    val email: String?
+    val email: String?,
+    val region: String?
 )
 
 class UserDataManager {
     private val db = FirebaseFirestore.getInstance() // Sets up the firestore database
     private val currentUserId = FirebaseAuth.getInstance().currentUser?.uid // Gets the currently logged in user's id
+
+    private val countryCodeChecker = CountryCodeChecker()
 
     private val calendar: Calendar = Calendar.getInstance()
     private val currentHour = calendar.get(Calendar.HOUR_OF_DAY) // Gets the current hour based on the device clock
@@ -38,8 +42,9 @@ class UserDataManager {
                         val firstName = it.getField<String>("firstName")
                         val surname = it.getField<String>("surname")
                         val emailAddress = it.getField<String>("email")
+                        val region = it.getField<String>("region")
 
-                        val userData = UserData(firstName, surname, emailAddress) // Store data into UserData object
+                        val userData = UserData(firstName, surname, emailAddress, region) // Store data into UserData object
 
                         completion(userData) // Returns userData
                     }
@@ -67,5 +72,31 @@ class UserDataManager {
                 textView.text = context.getString(R.string.navHeaderGreetingNoName, navHeaderGreeting)
             }
         }
+    }
+
+    // Checks if the user region has been set by the user in the profile section
+     fun checkUserSetRegion(callback: (String?) -> Unit) {
+         currentUserId?.let { uid ->
+             val docRef = db.collection("users").document(uid)
+
+             docRef.get()
+                 .addOnSuccessListener { documentSnapshot ->
+                     if (documentSnapshot != null) {
+                         val region = documentSnapshot.getField<String>("region")
+
+                         if (region != null) {
+                             val countryCode = countryCodeChecker.checkCountryCode(region)
+                             callback(countryCode)
+                         }
+                         else {
+                             callback(null)
+                         }
+                     }
+                 }
+                 .addOnFailureListener {
+                     Log.e(TAG, "Error fetching user document")
+                     callback(null)
+                 }
+         } ?: callback(null)
     }
 }
