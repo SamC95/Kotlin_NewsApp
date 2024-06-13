@@ -17,6 +17,7 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -26,6 +27,10 @@ import com.example.newsapp.adapters.formatDateTime
 import com.example.newsapp.data.APIRequests
 import com.example.newsapp.data.UserDataManager
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -45,11 +50,14 @@ class ArticleActivity : ComponentActivity() {
     private lateinit var articleDate: TextView
     private lateinit var articleUrl: TextView
 
+    private lateinit var bookmarkButton: ImageButton
     private lateinit var backButton: Button
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navHeaderText: TextView
 
     private val userDataManager = UserDataManager()
+
+    private val db = Firebase.firestore // Firestore database
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,6 +85,7 @@ class ArticleActivity : ComponentActivity() {
         articleContents = findViewById(R.id.articleContents)
         articleUrl = findViewById(R.id.articleUrlLink)
 
+        bookmarkButton = findViewById(R.id.bookmarkButton)
         navButton = findViewById(R.id.nav_button)
         backButton = findViewById(R.id.backButton)
         navView = findViewById(R.id.nav_view)
@@ -88,11 +97,15 @@ class ArticleActivity : ComponentActivity() {
 
         navButton.setOnClickListener {
             drawerLayout.openDrawer(navView)
-        }
+        } // Opens the side navigation menu
 
         backButton.setOnClickListener {
             finish()
-        }
+        } // Ends the activity and returns to the prior activity
+
+        bookmarkButton.setOnClickListener {
+            saveArticle(article)
+        } // Attempts to save the article into firestore when the bookmark button is pressed
     }
 
     // Load the data for the article that was passed to the activity
@@ -158,6 +171,41 @@ class ArticleActivity : ComponentActivity() {
 
         articleUrl.text = spannableString
         articleUrl.movementMethod = LinkMovementMethod.getInstance()
+    }
 
+    private fun saveArticle(articleDetails: APIRequests.Article) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid // Gets the user id to serve as the document id
+
+        if (userId != null) { // Ensure that the uid is not empty
+            val userDocRef = db.collection("userSavedArticles").document(userId) // Finds the document based on the uid
+
+            userDocRef.update("articles", FieldValue.arrayUnion(articleDetails)) // Update the document with the article details
+                .addOnSuccessListener {
+                    Toast.makeText(baseContext, "Article Saved", Toast.LENGTH_SHORT).show() // Toast to show success
+                }
+                .addOnFailureListener { error ->
+                    // If there is no document found by that user's uid
+                    if (error is com.google.firebase.firestore.FirebaseFirestoreException &&
+                        error.code == com.google.firebase.firestore.FirebaseFirestoreException.Code.NOT_FOUND) {
+
+                        // Creates an initial hashMap to store the data in an arrayList
+                        val initialData = hashMapOf(
+                            "articles" to arrayListOf(articleDetails)
+                        )
+                        userDocRef.set(initialData) // Set the initial data into the firestore document
+                            .addOnSuccessListener {
+                                Toast.makeText(baseContext, "Article Saved", Toast.LENGTH_SHORT).show()
+                            }
+                            .addOnFailureListener { exception -> // Handles case where failed to save the article
+                                Toast.makeText(baseContext, "Failed to save article", Toast.LENGTH_SHORT).show()
+                                Log.e(TAG, "Error creating document: $exception")
+                            }
+                    }
+                    else { // Handles the case where the error was something other than the specified Firestore exceptions
+                        Toast.makeText(baseContext, "Failed to save article", Toast.LENGTH_SHORT).show()
+                        Log.e(TAG, "Error saving document: $error")
+                    }
+                }
+        }
     }
 }

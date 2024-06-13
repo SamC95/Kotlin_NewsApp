@@ -42,7 +42,7 @@ class ListDetailsAdapter(context: Context, private val details: List<SectionDeta
                     "First Name" -> it.firstName
                     "Surname" -> it.surname
                     "Email Address" -> it.email
-                    "Saved Articles" -> "" // Temporary
+                    "Saved Articles" -> ""
                     else -> ""
                 }
                 // Updates the view on the main thread

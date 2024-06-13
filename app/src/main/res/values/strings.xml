@@ -52,4 +52,5 @@
     <string name="placeholder_image">Placeholder image</string>
     <string name="articleSource">- %1$s</string>
     <string name="back">Back</string>
+    <string name="save_article_button">Save article button</string>
 </resources>
