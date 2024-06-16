@@ -146,7 +146,7 @@ class NewsActivity : ComponentActivity(), NewsTypeAdapter.OnItemClickListener, A
             newCountry?.let {
                 Log.d(TAG, "User region found: $it")
                 countryCode = it
-            } ?: Log.d(TAG, "User region not found, using default countryCode: $countryCode")
+            } ?: Log.d(TAG, "User region not found, using location or default countryCode: $countryCode")
             // Checks if the user has set a region themselves, if so override location data
             regionResolved = true
 

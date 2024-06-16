@@ -21,8 +21,6 @@ import java.net.URL
 import javax.net.ssl.HttpsURLConnection
 
 class APIRequests {
-    private val userDataManager = UserDataManager()
-
     data class Article( // Handles the data class for an Article, along with the functionality required to make it Parcelable
         val sourceId: String?,
         val sourceName: String,
@@ -232,10 +230,8 @@ class APIRequests {
             val publishDate = articleObject.getString("publishedAt")
             val content = articleObject.optString("content")
 
-            /*
-            Filters out deleted articles, and ensures every article has an image. If it lacks
-            an image it is discarded, to ensure consistency.
-            */
+
+            // Filters out deleted articles so that they do not appear in the results
             if (title != "[Removed]") {
                 articles.add(
                     Article(
@@ -246,6 +242,4 @@ class APIRequests {
         }
         return articles
     }
-
-
 }
