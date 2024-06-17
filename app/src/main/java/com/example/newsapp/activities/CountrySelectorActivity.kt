@@ -65,10 +65,17 @@ class CountrySelectorActivity : ComponentActivity() {
     private fun updateUserRegion(newRegion: String) {
         val userId = auth.currentUser?.uid // Get the current logged in user's uid number
 
+        val updatedRegion =
+            if (newRegion == "Use location or default") {
+                null // Sets the region to default state if the user selects to use location or default
+            } else {
+                newRegion // If user selects a country from the list then set the region to that
+            }
+
         if (userId != null) {
             val userDocRef = db.collection("users").document(userId) // Gets the document based on the user's uid
 
-            userDocRef.update("region", newRegion) // Updates the region based on the user's choice
+            userDocRef.update("region", updatedRegion) // Updates the region based on the user's choice
                 .addOnSuccessListener {
                     Toast.makeText(this, "Region successfully updated", Toast.LENGTH_SHORT).show()
 

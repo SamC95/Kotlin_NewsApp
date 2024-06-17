@@ -31,11 +31,18 @@ android {
         properties.load(keystoreFile.inputStream())
 
         val apiKey = properties.getProperty("NEWS_API_KEY") ?: ""
+        val clientId = properties.getProperty("WEB_CLIENT_ID") ?: ""
 
         buildConfigField(
             type = "String",
             name = "NEWS_API_KEY",
             value = apiKey
+        )
+
+        buildConfigField(
+            type = "String",
+            name = "WEB_CLIENT_ID",
+            value = clientId
         )
     }
 
@@ -71,15 +78,16 @@ android {
 dependencies {
     implementation("pl.droidsonroids.gif:android-gif-drawable:1.2.22")
 
-    implementation("androidx.credentials:credentials:1.3.0-alpha04")
-    implementation("androidx.credentials:credentials-play-services-auth:1.3.0-alpha04")
+    implementation("androidx.credentials:credentials:1.3.0-beta02")
+    implementation("androidx.credentials:credentials-play-services-auth:1.3.0-beta02")
+    implementation("com.google.android.gms:play-services-identity:18.1.0")
 
     implementation("com.github.bumptech.glide:glide:4.12.0")
     implementation("com.google.android.gms:play-services-location:21.3.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 
     implementation("com.google.firebase:firebase-auth:23.0.0")
-    implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
+    implementation(platform("com.google.firebase:firebase-bom:33.1.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-firestore:25.0.0")
 

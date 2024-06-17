@@ -7,6 +7,7 @@ import com.example.newsapp.adapters.CountryDetails
 object CountryRepository {
     fun getCountries(): List<CountryDetails> {
         return listOf(
+            CountryDetails(R.drawable.icons8_region_48, "Use location or default"),
             CountryDetails(R.drawable.icons8_argentina_48, "Argentina"),
             CountryDetails(R.drawable.icons8_australia_48, "Australia"),
             CountryDetails(R.drawable.icons8_austria_48, "Austria"),
@@ -58,7 +59,7 @@ object CountryRepository {
             CountryDetails(R.drawable.icons8_united_kingdom_48, "United Kingdom"),
             CountryDetails(R.drawable.icons8_usa_48, "United States"),
             CountryDetails(R.drawable.icons8_ukraine_48, "Ukraine"),
-            CountryDetails(R.drawable.icons8_venezuela_48, "Venezuela")
+            CountryDetails(R.drawable.icons8_venezuela_48, "Venezuela"),
         )
     }
 }

@@ -6,8 +6,12 @@ import android.util.Log
 import android.widget.TextView
 import com.example.newsapp.R
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.getField
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import java.util.Calendar
 
 data class UserData(
@@ -98,5 +102,49 @@ class UserDataManager {
                      callback(null)
                  }
          } ?: callback(null)
+    }
+
+    suspend fun saveGoogleUserToFirestore(user: FirebaseUser) {
+        // Checks if a document exists in users for this user's uid
+        val userDocRef = FirebaseFirestore.getInstance().collection("users").document(user.uid)
+        val userDoc = userDocRef.get().await()
+
+        if (userDoc.exists()) { // If the user already exists in firestore then don't save the data
+            Log.d(TAG, "User already stored")
+            return
+        }
+
+        // Splits user first name and surname into separate variables
+        val (firstName, surname) = splitFullName(user.displayName ?: "")
+
+        val userDetails = hashMapOf( // Hashmap of the user details to be added to firestore
+            "firstName" to firstName,
+            "surname" to surname,
+            "email" to user.email,
+            "region" to null
+        )
+
+        try {
+            withContext(Dispatchers.IO) {
+                FirebaseFirestore.getInstance().collection("users")
+                    .document(user.uid)
+                    .set(userDetails) // Adds user details to firestore document with name of user uid
+            }.await()
+
+            Log.d(TAG, "User details saved")
+        }
+        catch (error: Exception) {
+            Log.e(TAG, "Error adding document to Firestore: $error")
+        }
+    }
+
+    // Splits the user's first name and last name into separate variables
+    private fun splitFullName(fullName: String): Pair<String, String> {
+        val parts = fullName.split(" ")
+
+        val firstName = parts.firstOrNull() ?: ""
+        val surname = parts.drop(1).joinToString(" ")
+
+        return Pair(firstName, surname)
     }
 }

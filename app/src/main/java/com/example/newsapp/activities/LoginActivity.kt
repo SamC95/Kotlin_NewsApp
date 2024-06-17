@@ -10,10 +10,27 @@ import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.credentials.CredentialManager
+import androidx.credentials.CustomCredential
+import androidx.credentials.GetCredentialRequest
+import androidx.credentials.GetCredentialResponse
+import androidx.credentials.exceptions.GetCredentialCustomException
+import androidx.credentials.exceptions.NoCredentialException
+import androidx.lifecycle.lifecycleScope
+import com.example.newsapp.BuildConfig
 import com.example.newsapp.R
+import com.example.newsapp.data.UserDataManager
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
 class LoginActivity : ComponentActivity() {
     private lateinit var emailTextField: EditText
@@ -26,6 +43,8 @@ class LoginActivity : ComponentActivity() {
     private lateinit var errorMsg: TextView
 
     private lateinit var auth: FirebaseAuth
+
+    val userDataManager = UserDataManager()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +61,8 @@ class LoginActivity : ComponentActivity() {
 
         auth = Firebase.auth
         val ssoPopUpWindow = SSOPopUpWindow(this)
+
+        val credentialManager = CredentialManager.create(this)
 
         // Shows pop up window with information for Single Sign On (See SSOPopUpWindow class)
         ssoInfo.setOnClickListener {
@@ -87,8 +108,41 @@ class LoginActivity : ComponentActivity() {
             }
         }
 
-        googleLogin.setOnClickListener {
-            // TO-DO
+        googleLogin.setOnClickListener { // On "Sign in with Google" button being pressed
+            // Gets Google ID details
+            val googleIdOption: GetGoogleIdOption = GetGoogleIdOption.Builder()
+                .setFilterByAuthorizedAccounts(false) // Don't filter by authorized accounts only
+
+                .setServerClientId(BuildConfig.WEB_CLIENT_ID)
+                // Gets the server client ID from properties, temporary approach to hide google client id on github
+
+                .setAutoSelectEnabled(true) // Enable auto-selecting the account if available
+                .build()
+
+           val request: GetCredentialRequest = GetCredentialRequest.Builder()
+               .addCredentialOption(googleIdOption) // Adds Google ID option to request
+               .build()
+
+            lifecycleScope.launch {
+                try {
+                    // Attempts to get credentials
+                    val result = credentialManager.getCredential(
+                        request = request,
+                        context = this@LoginActivity
+                    )
+
+                    // If successful, handled in this function
+                    handleGoogleSignIn(result)
+                }
+                catch (error: NoCredentialException) { // Handles case where no google accounts are found on the device.
+                    Log.e(TAG, "Login error occurred: $error")
+                    Toast.makeText(baseContext, "No google accounts found", Toast.LENGTH_SHORT).show()
+                }
+                catch (error: GetCredentialCustomException) { // Handles other errors
+                    Log.e(TAG, "Login error occurred: $error")
+                    Toast.makeText(baseContext, "Sorry, an error occurred!", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
 
         appleLogin.setOnClickListener {
@@ -132,6 +186,55 @@ class LoginActivity : ComponentActivity() {
 
                 return true
             }
+        }
+    }
+
+    private suspend fun handleGoogleSignIn(result: GetCredentialResponse) {
+        val credential = result.credential // Gets the credentials
+
+        // Ensures that credential received is a CustomCredential
+        if (credential !is CustomCredential) {
+            Log.e(TAG, "Unexpected type of credential")
+            return
+        }
+
+        // Attempts to parse the Google ID token from credential data
+        val googleIdTokenCredential = try {
+            withContext(Dispatchers.IO) {
+                GoogleIdTokenCredential.createFrom(credential.data)
+            }
+        }
+        catch (error: GoogleIdTokenParsingException) { // If parsing fails
+            Log.e(TAG, "Received an invalid google id token response: $error")
+            return
+        }
+
+        // Authenticate with Firebase using Google ID Token
+        val authResult = try {
+            FirebaseAuth.getInstance().signInWithCredential(
+                GoogleAuthProvider.getCredential(googleIdTokenCredential.idToken, null)
+            ).await() // Await the result of signInWithCredential
+        }
+        catch (error: Exception) {
+            Log.e(TAG, "Firebase authentication failed: $error")
+            return // If firebase auth fails
+        }
+
+        if (authResult.user != null) { // If firebase auth successful and user exists
+            Log.d(TAG, "Successfully signed in with credentials!")
+
+            val user = authResult.user!! // Retrieves the user details
+
+            userDataManager.saveGoogleUserToFirestore(user) // Saves the user details into firestore
+
+            // Starts the NewsActivity
+            val googleLoginIntent = Intent(this, NewsActivity::class.java)
+            startActivity(googleLoginIntent)
+            finish() // Ends this activity
+        }
+        else {
+            Log.e(TAG, "Error occurred signing in: $authResult")
+            return
         }
     }
 }
