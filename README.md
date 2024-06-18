@@ -139,16 +139,18 @@ private fun getLastLocation() {
 
 Below shows screenshots of the final implementation of the application, including several of the activities in the application and some examples of mentioned functionality. Any user details in the applications were used for testing and are not associated with any actual person.
 
+Application was developed using a Pixel 7 Pro API 34 Emulator
+
 <p float="left">
-  <img width="230" src="https://github.com/SamC95/Kotlin_NewsApp/assets/132593571/2dc23e32-12c9-41d4-a182-53475aece172">
-  <img width="230" src="https://github.com/SamC95/Kotlin_NewsApp/assets/132593571/4fbafc74-d47e-4a90-928b-2bc30c54502c">
-  <img width="230" src="https://github.com/SamC95/Kotlin_NewsApp/assets/132593571/d13022ee-516d-4a76-aa9f-84b95a744441">
-  <img width="230" src="https://github.com/SamC95/Kotlin_NewsApp/assets/132593571/e4d42255-4feb-45eb-8c05-c46e5eaf67f0">
-  <img width="230" src="https://github.com/SamC95/Kotlin_NewsApp/assets/132593571/d880797b-f45c-4c06-b05e-ffd4e1d0c57a">
-  <img width="230" src="https://github.com/SamC95/Kotlin_NewsApp/assets/132593571/95850b36-3e1d-4f69-9dfb-a0d0b95c811f">
-  <img width="230" src="https://github.com/SamC95/Kotlin_NewsApp/assets/132593571/914617d5-881c-4396-a397-eead6865c0b4">
-  <img width="230" src="https://github.com/SamC95/Kotlin_NewsApp/assets/132593571/3f31c379-79a7-4678-9c4b-ac7588fc377a">
-  <img width="230" src="https://github.com/SamC95/Kotlin_NewsApp/assets/132593571/ec98481b-44ae-4e6f-91fc-556a0cd9c0cb">
+  <img width="260" src="https://github.com/SamC95/Kotlin_NewsApp/assets/132593571/2dc23e32-12c9-41d4-a182-53475aece172">
+  <img width="260" src="https://github.com/SamC95/Kotlin_NewsApp/assets/132593571/4fbafc74-d47e-4a90-928b-2bc30c54502c">
+  <img width="260" src="https://github.com/SamC95/Kotlin_NewsApp/assets/132593571/d13022ee-516d-4a76-aa9f-84b95a744441">
+  <img width="260" src="https://github.com/SamC95/Kotlin_NewsApp/assets/132593571/e4d42255-4feb-45eb-8c05-c46e5eaf67f0">
+  <img width="260" src="https://github.com/SamC95/Kotlin_NewsApp/assets/132593571/d880797b-f45c-4c06-b05e-ffd4e1d0c57a">
+  <img width="260" src="https://github.com/SamC95/Kotlin_NewsApp/assets/132593571/95850b36-3e1d-4f69-9dfb-a0d0b95c811f">
+  <img width="260" src="https://github.com/SamC95/Kotlin_NewsApp/assets/132593571/914617d5-881c-4396-a397-eead6865c0b4">
+  <img width="260" src="https://github.com/SamC95/Kotlin_NewsApp/assets/132593571/3f31c379-79a7-4678-9c4b-ac7588fc377a">
+  <img width="260" src="https://github.com/SamC95/Kotlin_NewsApp/assets/132593571/ec98481b-44ae-4e6f-91fc-556a0cd9c0cb">
 </p>
 
 ## Key Learnings
