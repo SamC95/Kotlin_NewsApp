@@ -9,15 +9,16 @@ The API Key for [NewsAPI](https://newsapi.org/) is not included in the GitHub re
 If attempting to use the application, please get your own free key on the [website](https://newsapi.org/) and create a file "apikeys.properties" and store it with the name "NEWS_API_KEY"
 
 ## Contents
-* [Project Aims]()
-* [Approach]()
-* [Technologies]()
-* [Project Planning]()
-* [Implementation]()
-* [Key Learnings]()
-* [Achievements]()
-* [Challenges]()
-* [Conclusions]()
+* [Project Aims](https://github.com/SamC95/Kotlin_NewsApp#project-aims)
+* [Approach](https://github.com/SamC95/Kotlin_NewsApp#approach)
+* [Technologies](https://github.com/SamC95/Kotlin_NewsApp#technologies)
+* [Project Planning](https://github.com/SamC95/Kotlin_NewsApp#project-planning)
+* [Implementation](https://github.com/SamC95/Kotlin_NewsApp#implementation)
+* [Key Learnings](https://github.com/SamC95/Kotlin_NewsApp#key-learnings)
+* [Achievements](https://github.com/SamC95/Kotlin_NewsApp#achievements)
+* [Challenges](https://github.com/SamC95/Kotlin_NewsApp#challenges)
+* [Conclusions](https://github.com/SamC95/Kotlin_NewsApp#conclusions)
+* [Credits](https://github.com/SamC95/Kotlin_NewsApp#credits)
 
 ## Project Aims
 * Develop an Android-based news application using Kotlin
