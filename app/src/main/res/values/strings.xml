@@ -12,14 +12,13 @@
     <string name="login_with_email_and_password">Sign In</string>
     <string name="log_in_using_another_service">OR SIGN IN WITH</string>
     <string name="login_with_google_account">Login with Google Account</string>
-    <string name="log_in_with_apple_account">Log in with Apple Account</string>
     <string name="what_s_this"><u>What\'s This?</u></string>
     <string name="noAccount">Don\'t have an account? </string>
     <string name="signUpLink"><u>Sign Up</u></string>
     <string name="logo_of_just_the_news_application">Logo of Just the News Application</string>
-    <string name="these_options_allow_you_to_log_in_using_your_google_or_apple_account_credentials">You can log in using your Google or Apple account credentials.\n \nChoose one of these if you would prefer not to make a dedicated Just the News account</string>
+    <string name="these_options_allow_you_to_log_in_using_your_google_or_apple_account_credentials">You can log in using your Google account credentials.\n \nChoose this option if you would prefer not to make a dedicated Just the News account</string>
     <string name="close">Close</string>
-    <string name="log_in_using_an_existing_account">Log in using an existing account or third-party log in</string>
+    <string name="log_in_using_an_existing_account">Log in using an existing Just the News or Google account</string>
     <string name="create_a_just_the_news_account">Create a Just the News account</string>
     <string name="create_an_account">Create an account</string>
     <string name="already_have_an_account">Already have an account?</string>

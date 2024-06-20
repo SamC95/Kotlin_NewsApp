@@ -75,7 +75,7 @@ class AccCreationActivity : ComponentActivity() {
                     passwordField.text.toString()
                 )
                     .addOnCompleteListener {
-                        if (it.isSuccessful) { // If the process is successful
+                        if (it.isSuccessful) { // If the user is added successfully
                             Log.d(TAG, "createUserWithEmail:success")
 
                             val userMap = hashMapOf( // Creates a hashmap of the user details
@@ -101,11 +101,7 @@ class AccCreationActivity : ComponentActivity() {
                         }
                         else { // If authentication fails
                             Log.w(TAG, "createUserWithEmail:failure", it.exception)
-                            Toast.makeText(
-                                baseContext,
-                                "Authentication failed.",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            Toast.makeText(baseContext, "Authentication failed.", Toast.LENGTH_SHORT).show()
                         }
                     }
             }

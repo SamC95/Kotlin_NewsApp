@@ -136,19 +136,6 @@
         app:layout_constraintTop_toBottomOf="@+id/loginServices"
         app:layout_constraintVertical_bias="0.113" />
 
-    <ImageButton
-        android:id="@+id/appleLogin"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:background="@null"
-        android:contentDescription="@string/log_in_with_apple_account"
-        android:src="@drawable/apple_id_button1x"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/googleLogin"
-        app:layout_constraintVertical_bias="0.0" />
-
     <TextView
         android:id="@+id/SSOInfo"
         android:layout_width="wrap_content"
@@ -161,8 +148,9 @@
         android:textColor="@color/links"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appleLogin"
+        app:layout_constraintTop_toBottomOf="@+id/googleLogin"
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView

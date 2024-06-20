@@ -38,13 +38,12 @@ class LoginActivity : ComponentActivity() {
     private lateinit var signUpRedirect: TextView
     private lateinit var loginBtn: Button
     private lateinit var googleLogin: ImageButton
-    private lateinit var appleLogin: ImageButton
     private lateinit var ssoInfo: TextView
     private lateinit var errorMsg: TextView
 
     private lateinit var auth: FirebaseAuth
 
-    val userDataManager = UserDataManager()
+    private val userDataManager = UserDataManager()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +54,6 @@ class LoginActivity : ComponentActivity() {
         signUpRedirect = findViewById(R.id.signUpRedirect)
         loginBtn = findViewById(R.id.loginButton)
         googleLogin = findViewById(R.id.googleLogin)
-        appleLogin = findViewById(R.id.appleLogin)
         ssoInfo = findViewById(R.id.SSOInfo)
         errorMsg = findViewById(R.id.errorMsg)
 
@@ -90,8 +88,6 @@ class LoginActivity : ComponentActivity() {
 
                             emailTextField.text.clear()
                             passwordTextField.text.clear()
-
-                            Toast.makeText(baseContext, "User found", Toast.LENGTH_SHORT).show()
 
                             val validatedLoginIntent = Intent(this, NewsActivity::class.java)
                             startActivity(validatedLoginIntent)
@@ -143,10 +139,6 @@ class LoginActivity : ComponentActivity() {
                     Toast.makeText(baseContext, "Sorry, an error occurred!", Toast.LENGTH_SHORT).show()
                 }
             }
-        }
-
-        appleLogin.setOnClickListener {
-            // TO-DO
         }
     }
 
