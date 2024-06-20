@@ -53,6 +53,35 @@ class AccCreationActivity : ComponentActivity() {
         auth = Firebase.auth
         val db = Firebase.firestore
 
+        if (savedInstanceState != null) {
+            val firstNameText = savedInstanceState.getString("firstNameInput")
+            val surnameText = savedInstanceState.getString("surnameInput")
+            val emailText = savedInstanceState.getString("emailInput")
+            val passwordText = savedInstanceState.getString("passInput")
+            val confirmText = savedInstanceState.getString("confirmPassInput")
+
+            val firstNameStatus = savedInstanceState.getString("firstNameError")
+            val surnameStatus = savedInstanceState.getString("surnameError")
+            val emailStatus = savedInstanceState.getString("emailError")
+            val passStatus = savedInstanceState.getString("passError")
+            val confirmStatus = savedInstanceState.getString("confirmPassError")
+
+            firstNameField.setText(firstNameText)
+            firstNameError.text = firstNameStatus
+
+            surnameField.setText(surnameText)
+            surnameError.text = surnameStatus
+
+            emailAddressField.setText(emailText)
+            emailAddressError.text = emailStatus
+
+            passwordField.setText(passwordText)
+            passwordError.text = passStatus
+
+            confirmPassField.setText(confirmText)
+            confirmPassError.text = confirmStatus
+        }
+
         // Redirects to the log in page
         loginRedirect.setOnClickListener {
             val redirectIntent = Intent(this, LoginActivity::class.java)
@@ -91,12 +120,16 @@ class AccCreationActivity : ComponentActivity() {
                             db.collection("users") // Defines the collection to store data in
                                 .document(userId).set(userMap) // Sets document name to unique UID and sets content to values in hashmap
                                 .addOnSuccessListener {
-                                    Toast.makeText(this, "Successfully added", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(this, "Successfully created. Please log in", Toast.LENGTH_SHORT).show()
                                     firstNameField.text.clear()
                                     surnameField.text.clear()
                                     emailAddressField.text.clear()
                                     passwordField.text.clear()
                                     confirmPassField.text.clear() // Clears fields on success
+
+                                    val creationIntent = Intent(this, LoginActivity::class.java)
+                                    startActivity(creationIntent)
+                                    finish()
                                 }
                         }
                         else { // If authentication fails
@@ -255,5 +288,24 @@ class AccCreationActivity : ComponentActivity() {
                 return true
             }
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putString("firstNameInput", firstNameField.text.toString())
+        outState.putString("firstNameError", firstNameError.text.toString())
+
+        outState.putString("surnameInput", surnameField.text.toString())
+        outState.putString("surnameError", surnameError.text.toString())
+
+        outState.putString("emailInput", emailAddressField.text.toString())
+        outState.putString("emailError", emailAddressError.text.toString())
+
+        outState.putString("passInput", passwordField.text.toString())
+        outState.putString("passError", passwordError.text.toString())
+
+        outState.putString("confirmPassField", confirmPassField.text.toString())
+        outState.putString("confirmPassError", confirmPassError.text.toString())
+
+        super.onSaveInstanceState(outState)
     }
 }

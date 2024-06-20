@@ -15,16 +15,19 @@ object NavigationMenuListener {
                 R.id.nav_home -> {
                     val homeIntent = Intent(activity, NewsActivity::class.java)
                     activity.startActivity(homeIntent)
+                    activity.finish()
                     true
                 }
                 R.id.nav_profile -> {
                     val profileIntent = Intent(activity, ProfileActivity::class.java)
                     activity.startActivity(profileIntent)
+                    activity.finish()
                     true
                 }
                 R.id.nav_settings -> {
                     val settingsIntent = Intent(activity, SettingsActivity::class.java)
                     activity.startActivity(settingsIntent)
+                    activity.finish()
                     true
                 }
                 R.id.nav_logout -> {

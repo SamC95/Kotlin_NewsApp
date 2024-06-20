@@ -62,6 +62,17 @@ class LoginActivity : ComponentActivity() {
 
         val credentialManager = CredentialManager.create(this)
 
+        // Ensures elements retain their state on orientation change
+        if (savedInstanceState != null) {
+            val emailText = savedInstanceState.getString("emailInput")
+            val passwordText = savedInstanceState.getString("passwordInput")
+            val errorText = savedInstanceState.getString("errorMsg")
+
+            emailTextField.setText(emailText)
+            passwordTextField.setText(passwordText)
+            errorMsg.text = errorText
+        }
+
         // Shows pop up window with information for Single Sign On (See SSOPopUpWindow class)
         ssoInfo.setOnClickListener {
             ssoPopUpWindow.showPopUpWindow(it)
@@ -228,5 +239,14 @@ class LoginActivity : ComponentActivity() {
             Log.e(TAG, "Error occurred signing in: $authResult")
             return
         }
+    }
+
+    // Save data on orientation change
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putString("emailInput", emailTextField.text.toString())
+        outState.putString("passwordInput", passwordTextField.text.toString())
+        outState.putString("errorMsg", errorMsg.text.toString())
+
+        super.onSaveInstanceState(outState)
     }
 }

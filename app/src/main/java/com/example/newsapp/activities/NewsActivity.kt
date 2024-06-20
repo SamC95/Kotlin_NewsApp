@@ -32,6 +32,7 @@ import com.google.android.material.navigation.NavigationView
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import java.util.ArrayList
 import java.util.Locale
 
 class NewsActivity : ComponentActivity(), NewsTypeAdapter.OnItemClickListener, ArticlesAdapter.OnArticleClickListener {
@@ -57,6 +58,9 @@ class NewsActivity : ComponentActivity(), NewsTypeAdapter.OnItemClickListener, A
 
     private val apiKey = BuildConfig.NEWS_API_KEY
     private var countryCode = "us" // Default case
+
+    private var isTopStoriesSelected: Boolean = true
+    private var selectedCategory: String? = null
 
     // Requests permission from user to use their location for regional news
     private val requestPermissionLauncher = registerForActivityResult(
@@ -104,10 +108,31 @@ class NewsActivity : ComponentActivity(), NewsTypeAdapter.OnItemClickListener, A
         // Gets the user's location
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
+        if (savedInstanceState != null) {
+            val newsSearch = savedInstanceState.getString("newsSearchInput")
+            val savedCountry = savedInstanceState.getString("countryCode")
+
+            isTopStoriesSelected = savedInstanceState.getBoolean("isTopStoriesSelected")
+            selectedCategory = savedInstanceState.getString("selectedCategory")
+
+            newsSearchBar.setText(newsSearch)
+
+            if (savedCountry != null) {
+                countryCode = savedCountry
+            }
+        }
+
         // Check for permissions and request if not granted
         if (checkPermissions()) {
             // Permissions are already granted, so call getLastLocation
-            getLastLocation()
+            if (isTopStoriesSelected) { // Checks if top stories is selected (default) for orientation changes
+                loadTopStories()
+            }
+            else {
+                selectedCategory?.let { category -> // Checks if a category was selected before orientation change
+                    onItemClicked(0, category)
+                }
+            }
         } else {
             // Request permissions using the new API
             requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -215,6 +240,8 @@ class NewsActivity : ComponentActivity(), NewsTypeAdapter.OnItemClickListener, A
     override fun onItemClicked(position: Int, data: String) {
         if (data == "Top Stories") { // if top stories button is pressed, load top stories again
             loadTopStories()
+            isTopStoriesSelected = true
+            selectedCategory = null
         }
         else { // If any other button is pressed, category is selected
             userDataManager.checkUserSetRegion { newCountry ->
@@ -222,6 +249,9 @@ class NewsActivity : ComponentActivity(), NewsTypeAdapter.OnItemClickListener, A
                     countryCode = it
                 } // Checks if the user has set a region themselves, if so override location data
             }
+
+            isTopStoriesSelected = false
+            selectedCategory = data
 
             apiRequests.categoryRequests(countryCode, data.lowercase(), apiKey) { response, errorMessage: String? -> // data is set to lowercase to match api fields
                 runOnUiThread {
@@ -305,5 +335,16 @@ class NewsActivity : ComponentActivity(), NewsTypeAdapter.OnItemClickListener, A
         val articleIntent = Intent(this, ArticleActivity::class.java)
         articleIntent.putExtra("articleData", clickedArticle)
         startActivity(articleIntent)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putString("newsSearchInput", newsSearchBar.text.toString())
+
+        outState.putString("countryCode", countryCode)
+
+        outState.putBoolean("isTopStoriesSelected", isTopStoriesSelected)
+        outState.putString("selectedCategory", selectedCategory)
+
+        super.onSaveInstanceState(outState)
     }
 }
