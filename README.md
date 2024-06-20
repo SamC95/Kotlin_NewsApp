@@ -136,8 +136,6 @@ private fun getLastLocation() {
     }
 ```
 
--- TODO - ADD MORE IMPLEMENTATION DETAILS --
-
 ### Application Screenshots
 
 Below shows screenshots of the final implementation of the application, including several of the activities in the application and some examples of mentioned functionality. Any user details in the applications were used for testing and are not associated with any actual person.
