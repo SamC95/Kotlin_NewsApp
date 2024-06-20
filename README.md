@@ -31,7 +31,7 @@ If attempting to use the application, please get your own free key on the [websi
 * User should be able to search for news based on their input
 * Functionality for the user to save articles on their account
 * The user should have the ability to delete their account along with any saved data related to it permanently
-* Application should behave as expected when changing between vertical and horizontal landscape and data should be correctly retained
+* Application should behave as expected when changing between vertical and horizontal orientation and data should be correctly retained
 
 ## Approach
 
