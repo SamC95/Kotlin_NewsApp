@@ -337,6 +337,7 @@ class NewsActivity : ComponentActivity(), NewsTypeAdapter.OnItemClickListener, A
         startActivity(articleIntent)
     }
 
+    // Saves state of search bar and other elements
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putString("newsSearchInput", newsSearchBar.text.toString())
 
