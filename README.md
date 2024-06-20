@@ -27,7 +27,7 @@ If attempting to use the application, please get your own free key on the [websi
 * Utilise [NewsAPI](https://newsapi.org/) to populate the application with data
 * Include functionality to retrieve regional news based on the user's location with permission
 * Allow the user to define the region that their account is set to manually, with appropriate news retrieved
-* Implement the functionality for the user to log in using their Google or Apple account
+* Implement the functionality for the user to log in using their Google account
 * User should be able to search for news based on their input
 * Functionality for the user to save articles on their account
 * The user should have the ability to delete their account along with any saved data related to it permanently
@@ -69,6 +69,8 @@ This diagram was created to determine the overall flow of the application in ter
 Some storyboards of the intended user interface for the application were created, representing some of the core activities in the application.
 
 #### Login & Create Account
+
+During development, I eventually opted to not include Apple login but this was a initially considered during the planning phase.
 
 <p float="left">
   <img src="https://github.com/SamC95/Kotlin_NewsApp/assets/132593571/56ed6097-6da4-4ee3-b07f-b5eb910e94ee" width="300" />
@@ -143,8 +145,8 @@ Below shows screenshots of the final implementation of the application, includin
 Application was developed using a Pixel 7 Pro API 34 Emulator
 
 <p float="left">
-  <img width="260" src="https://github.com/SamC95/Kotlin_NewsApp/assets/132593571/2dc23e32-12c9-41d4-a182-53475aece172">
-  <img width="260" src="https://github.com/SamC95/Kotlin_NewsApp/assets/132593571/4fbafc74-d47e-4a90-928b-2bc30c54502c">
+  <img width="260" src="https://github.com/SamC95/Kotlin_NewsApp/assets/132593571/a855d247-f50b-416a-91ba-06973532b83a">
+  <img width="260" src="https://github.com/SamC95/Kotlin_NewsApp/assets/132593571/34a35e44-ffe9-4846-a33c-14f0f88da512">
   <img width="260" src="https://github.com/SamC95/Kotlin_NewsApp/assets/132593571/d13022ee-516d-4a76-aa9f-84b95a744441">
   <img width="260" src="https://github.com/SamC95/Kotlin_NewsApp/assets/132593571/e4d42255-4feb-45eb-8c05-c46e5eaf67f0">
   <img width="260" src="https://github.com/SamC95/Kotlin_NewsApp/assets/132593571/d880797b-f45c-4c06-b05e-ffd4e1d0c57a">
