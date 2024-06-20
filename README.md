@@ -70,7 +70,7 @@ Some storyboards of the intended user interface for the application were created
 
 #### Login & Create Account
 
-During development, I eventually opted to not include Apple login but this was a initially considered during the planning phase.
+During development, I eventually opted to not include Apple login but this was initially considered during the planning phase.
 
 <p float="left">
   <img src="https://github.com/SamC95/Kotlin_NewsApp/assets/132593571/56ed6097-6da4-4ee3-b07f-b5eb910e94ee" width="300" />
