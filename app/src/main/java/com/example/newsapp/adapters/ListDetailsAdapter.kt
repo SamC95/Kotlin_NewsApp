@@ -44,6 +44,7 @@ class ListDetailsAdapter(context: Context, details: List<SectionDetails>)
                     "Email Address" -> it.email
                     "Country" -> it.region ?: "Click here to set your country"
                     "Saved Articles" -> "Click here to view saved articles"
+                    "Delete Account" -> "Click here to permanently delete your account and all associated data"
                     else -> ""
                 }
                 // Updates the view on the main thread

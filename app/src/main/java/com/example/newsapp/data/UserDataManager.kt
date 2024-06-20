@@ -30,6 +30,8 @@ class UserDataManager {
     private val calendar: Calendar = Calendar.getInstance()
     private val currentHour = calendar.get(Calendar.HOUR_OF_DAY) // Gets the current hour based on the device clock
 
+    private val auth = FirebaseAuth.getInstance()
+
     private val navHeaderGreeting = when(currentHour) {
         in 0..11 -> "Good morning"
         in 12..16 -> "Good afternoon"
@@ -146,5 +148,55 @@ class UserDataManager {
         val surname = parts.drop(1).joinToString(" ")
 
         return Pair(firstName, surname)
+    }
+
+    // Function for deleting the user's account on firebase when requested by the user
+     fun deleteAccount(callback: (Boolean, String?) -> Unit) {
+        val user: FirebaseUser? = auth.currentUser
+
+        user?.let {
+            deleteUserData(user.uid) { deletionStatus, deletionMessage ->
+                if (deletionStatus) { // If user data was successfully deleted
+                    user.delete() // then delete user account entirely
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                callback(true, null)
+                            }
+                            else {
+                                task.exception?.let { exception ->
+                                    callback(false, exception.message)
+                                }
+                            }
+                        }
+                }
+                else {
+                    callback(false, deletionMessage)
+                }
+            }
+        } ?: run {
+            callback(false, "No user currently signed in")
+        }
+    }
+
+    // Deletes the user's data from firestore if they choose to delete their account
+    private fun deleteUserData(uid: String, callback: (Boolean, String?) -> Unit) {
+        val userDocRef = db.collection("users").document(uid)
+        val userSavedArticlesRef = db.collection("userSavedArticles").document(uid)
+        // Gets the users data from firestore based on the user's uid
+
+        val batch = db.batch()
+        batch.delete(userDocRef)
+        batch.delete(userSavedArticlesRef) // Deletes the user data and their saved articles
+
+        batch.commit().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                callback(true, null)
+            }
+            else {
+                task.exception?.let { exception ->
+                    callback(false, exception.message)
+                }
+            }
+        }
     }
 }
